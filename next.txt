@@ -1,0 +1,9 @@
+Jan 18 Work
+
+- Research middleware, sessions, redis cache (basically as much as you can about stuff that goes in between the front and back ends)
+    - If no progress, ask someone
+- Add CRUD rest apis
+
+Optional:
+
+- Confirm if use of JS to render is correct (should be fine, but doesn't hurt to ask)
