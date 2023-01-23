@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/Yash294/TODO/repos"
@@ -36,7 +35,7 @@ func Login(c *fiber.Ctx) error {
 			"message": "Failed to check user login credentials",
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"data": success,
@@ -60,27 +59,31 @@ func Signup(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": "Failed to create a new user."
+			"message": "Failed to create a new user.",
 		})
 	}
-
+	
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 	})
 }
 
 func CheckIfUsernameExists(c *fiber.Ctx) error {
-	type Username struct {
-		username string
+	type UsernameCheck struct {
+		Username string `json:"username"`
 	}
 
-	var result Username
+	var result UsernameCheck
 
 	if err := c.BodyParser(&result); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Incorrect data format sent to server.",
+		})
 	}
 
-	exists, err := repos.CheckIfUsernameExists(result.username)
+	fmt.Println(result.Username)
+	exists, err := repos.CheckIfUsernameExists(result.Username)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -88,6 +91,8 @@ func CheckIfUsernameExists(c *fiber.Ctx) error {
 			"message": "Failed to check username existence.",
 		})
 	}
+
+	fmt.Println("HELLO")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,

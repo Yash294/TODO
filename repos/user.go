@@ -1,15 +1,15 @@
 package repos
 
 import (
-	"errors"
 	"fmt"
+	"errors"
 	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/models"
 )
 
 func CreateUser(username string, password string) error {
 
-	user := models.User{Username: username, Password: password}
+	var user models.User
 	result := database.DB.Where("username = ?", username).Find(&user)
 
 	if result.RowsAffected != 0 {
@@ -28,30 +28,30 @@ func CreateUser(username string, password string) error {
 
 func ChangePassword(username string, currentPassword string, newPassword string) error {
 
-	user := models.User{Username: username, Password: currentPassword}
+	var user models.User
 	result := database.DB.Where("username = ? AND password = ?", username, currentPassword).Find(&user)
 
 	if result.RowsAffected == 0 {
-		return errors.New("Username/Password is incorrect.")
+		return errors.New("username/password is incorrect")
 	}
 
 	result = database.DB.Model(&user).Update("password", newPassword)
 
 	if result.Error != nil {
-		return errors.New("Failed to update user password.")
+		return errors.New("failed to update user password")
 	}
 
 	return nil
 }
 
 func Login(username string, password string) (bool, error) {
-	user := models.User{Username: username, Password: password}
-	result := database.DB.Where("username = ? AND password = ?", username, password).Find(&user)
+	result := database.DB.Model(models.User{}).Where("username = ? AND password = ?", username, password)
 
 	if result.Error != nil {
-		return false, errors.New("Failed to retrieve login info.")
+		return false, errors.New("failed to retrieve login info")
 	}
 
+	// have to fix next
 	if result.RowsAffected == 0 {
 		return false, nil
 	}
@@ -59,12 +59,21 @@ func Login(username string, password string) (bool, error) {
 	return true, nil
 }
 
-func CheckIfUsernameExists(username string) ([]string, error) {
-	// result := database.DB.Model(models.User{}).Where
+func CheckIfUsernameExists(username string) (bool, error) {
 
-	// if result.Error != nil {
-	// 	fmt.Println(result.Error)
-	// }
+	fmt.Println(username)
+	var query string
+	result := database.DB.Model(models.User{}).Select("username").Where("username = ?", username).Find(&query)
 
-	// return usernames, nil
+	fmt.Println("QUERY: ", query)
+
+	if result.Error != nil {
+		return false, errors.New("failed to retrieve username")
+	}
+
+	if username == query {
+		return false, nil
+	}
+
+	return true, nil
 }
