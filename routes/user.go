@@ -8,7 +8,7 @@ import (
 func UserRoutes(route fiber.Router) {
 	route.Get("/login", controllers.RenderLogin)
 	route.Get("/signup", controllers.RenderSignup)
-	route.Get("/signup/usernames", controllers.GetAllUsernames)
+	route.Post("/signup/usernames", controllers.CheckIfUsernameExists)
 	route.Post("/login", controllers.Login)
 	route.Post("/signup", controllers.Signup)
 }

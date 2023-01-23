@@ -3,7 +3,6 @@ package repos
 import (
 	"errors"
 	"fmt"
-
 	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/models"
 )
@@ -33,13 +32,13 @@ func ChangePassword(username string, currentPassword string, newPassword string)
 	result := database.DB.Where("username = ? AND password = ?", username, currentPassword).Find(&user)
 
 	if result.RowsAffected == 0 {
-		panic("Username/Password is incorrect.")
+		return errors.New("Username/Password is incorrect.")
 	}
 
 	result = database.DB.Model(&user).Update("password", newPassword)
 
 	if result.Error != nil {
-		panic("Failed to update user password.")
+		return errors.New("Failed to update user password.")
 	}
 
 	return nil
@@ -50,7 +49,7 @@ func Login(username string, password string) (bool, error) {
 	result := database.DB.Where("username = ? AND password = ?", username, password).Find(&user)
 
 	if result.Error != nil {
-		return false, result.Error
+		return false, errors.New("Failed to retrieve login info.")
 	}
 
 	if result.RowsAffected == 0 {
@@ -60,13 +59,12 @@ func Login(username string, password string) (bool, error) {
 	return true, nil
 }
 
-func GetAllUsernames() ([]string, error) {
-	var usernames []string
-	result := database.DB.Model(models.User{}).Select("username").Find(&usernames)
+func CheckIfUsernameExists(username string) ([]string, error) {
+	// result := database.DB.Model(models.User{}).Where
 
-	if result.Error != nil {
-		fmt.Println(result.Error)
-	}
+	// if result.Error != nil {
+	// 	fmt.Println(result.Error)
+	// }
 
-	return usernames, nil
+	// return usernames, nil
 }
