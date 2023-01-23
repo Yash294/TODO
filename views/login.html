@@ -13,23 +13,22 @@
         <h1 class="pb-2 text-muted">TODO...</h1>
         <h3>Login</h3>
         <p>Welcome to the TODO task management application. Please login below.</p>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Username123">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password">
-        </div>
-        <div>
-
-        </div> 
-        <div class="submit-button pb-2">
-            <button type="button" class="btn btn-primary">Submit</button>
-        </div>
-
-        <p>New to TODO? <a href="./signup.html">Signup here.</a></p>
-    <div> 
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Username123">
+                <div id="username-alert"></div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password">
+                <div id="pwd-alert"></div>
+                <p>Forgot your password? <a>Reset here.</a></p>
+            </div>
+            <button id="submit-btn" class="btn btn-primary pb-2">Submit</button>
+        </form>
+        
+        <p>New to TODO? <a href="./signup">Signup here.</a></p>
     </div>
 
     <script>
@@ -38,6 +37,88 @@
                 Success notification/failed
                     - After success, redirect to existing dashboard
         */
+        let username, password
+        let usernameAlert = document.getElementById('username-alert')
+        let passwordAlert = document.getElementById('pwd-alert')
+        let submitBtn = document.getElementById('submit-btn')
+        let usernameValid = false, passwordValid = false
+
+        // alphanumeric regex
+        let exp = /^[a-z0-9]+$/i;
+
+        document.getElementById('username').addEventListener('input', function(e) {
+            username = e.target.value
+
+            if (username.length === 0) {
+                validationNeutral(usernameAlert)
+                usernameValid = false
+                return
+            }
+
+            if ((username.length < 5 || username.length > 20) || !username.match(exp)) { 
+                validationFailure(usernameAlert, 'Username must be alphanumeric and between 5-20 characters.')
+                usernameValid = false
+                return
+            } 
+            validationNeutral(usernameAlert)
+            usernameValid = true
+            enableSubmit()
+        })
+
+        document.getElementById('password').addEventListener('input', function(e) {
+            password = e.target.value
+
+            if (password.length === 0) {
+                validationNeutral(passwordAlert)
+                passwordValid = false
+                return
+            }
+
+            if ((password.length < 5 || password.length > 20) || !password.match(exp)) { 
+                validationFailure(passwordAlert, 'Password must be alphanumeric and between 5-20 characters.')
+                passwordValid = false
+                return
+            } 
+            validationNeutral(passwordAlert)
+            passwordValid = true
+            enableSubmit()
+        })
+
+        document.getElementById('login-form').addEventListener("submit", function(e) {
+            e.preventDefault()
+
+            fetch('/user/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            }).then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+        })
+
+        function validationFailure(alert, message) {
+            alert.className = 'alert alert-danger'
+            alert.textContent = message
+            submitBtn.disabled = true
+        }
+
+        function validationNeutral(alert) {
+            alert.className = ''
+            alert.textContent = ''
+            submitBtn.disabled = true
+        }
+
+        function enableSubmit() {
+            if (usernameValid && passwordValid) {
+                submitBtn.disabled = false
+            }
+        } 
+
     </script>
 
 

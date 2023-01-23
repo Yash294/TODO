@@ -45,8 +45,19 @@ func ChangePassword(username string, currentPassword string, newPassword string)
 	return nil
 }
 
-func GetLogin(username string, password string) error {
-	return nil
+func Login(username string, password string) (bool, error) {
+	user := models.User{Username: username, Password: password}
+	result := database.DB.Where("username = ? AND password = ?", username, password).Find(&user)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func GetAllUsernames() ([]string, error) {

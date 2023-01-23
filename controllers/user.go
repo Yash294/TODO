@@ -17,7 +17,28 @@ func RenderSignup(c *fiber.Ctx) error {
 }
 
 func Login(c *fiber.Ctx) error {
-	return nil
+	type LoginInfo struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var result LoginInfo
+
+	if err := c.BodyParser(&result); err != nil {
+		return err
+	}
+
+	success, dbErr := repos.Login(result.Username, result.Password)
+
+	if dbErr != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to check user login credentials",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"data": success,
+	})
 }
 
 func Signup(c *fiber.Ctx) error {

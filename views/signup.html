@@ -28,18 +28,17 @@
                 <input type="password" class="form-control mb-3" id="confirmPassword">
                 <div id="pwd-match-alert"></div>
             </div>
-            <button id="submit-btn" class="btn btn-primary pb-2" disabled>Submit</button>
+            <button id="submit-btn" class="btn btn-primary pb-2">Submit</button>
         </form>
 
-        <p>Have an account? <a href="./login.html">Login here.</a></p>
+        <p>Have an account? <a href="./login">Login here.</a></p>
     <div> 
     </div>
 
     <script>
         
         /* WORK LEFT: 
-                Need an API call to ensure username not taken. 
-                Also need password requirements (min. 8 chars, upper, lower case, etc)
+                Optimization: Instead of requesting whole array of usernames, simply send inputted username and return true or false
                 Need confirmation success notification/failure (depending on db success/crash)
                     - After success, redirect to blank dashboard
         */
@@ -96,7 +95,7 @@
                 return
             } 
             validationSuccess(passwordAlert, 'Passwords look good!')
-            passwordValid = true
+            passwordsValid = true
             enableSubmit()
         })
 
@@ -126,7 +125,22 @@
         })  
         
         // wait for submit
-        document.getElementById('signup-form').addEventListener("submit", requestSubmit)
+        document.getElementById('signup-form').addEventListener("submit", function(e) {
+            e.preventDefault()
+
+            fetch('/user/signup', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            }).then(res => { 
+                console.log(res)
+            }).catch(err => console.log(err))
+        })
 
         function validationFailure(alert, message) {
             alert.className = 'alert alert-danger'
@@ -172,18 +186,7 @@
         }
 
         function requestSubmit(event) {
-            fetch('/user/signup', {
-                method: 'POST',
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                }),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            }).then(res => { 
-                console.log(res)
-            }).catch(err => console.log(err))
+            
         }
 
         
