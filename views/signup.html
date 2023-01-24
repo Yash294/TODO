@@ -28,7 +28,7 @@
                 <input type="password" class="form-control mb-3" id="confirmPassword">
                 <div id="pwd-match-alert"></div>
             </div>
-            <button id="submit-btn" class="btn btn-primary pb-2">Submit</button>
+            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Submit</button>
         </form>
 
         <p>Have an account? <a href="./login">Login here.</a></p>
@@ -139,7 +139,17 @@
                 }
             }).then(res => { 
                 console.log(res)
-            }).catch(err => console.log(err))
+                if (!res.ok) {
+                    throw new Error('HTTP error, status =', res.status)
+                }
+                return res.json()
+            }).then(res => {
+                alert(res.message)
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
         })
 
         function validationFailure(alert, message) {
@@ -178,10 +188,17 @@
                     'Content-type': 'application/json'
                 }
             })
-            .then(res => res.json())
-            .then(value => {
-                console.log(value)
-                if (!value.data) {
+            .then(res => {
+                console.log(res)
+                if (!res.ok) {
+                    throw new Error('HTTP error, status =', res.status)
+                }
+                return res.json()
+            })
+            .then(res => {
+                console.log(res)
+                
+                if (!res.data) {
                    validationFailure(usernameAlert, 'Username already exists.')
                    usernameValid = false
                    return
@@ -191,7 +208,10 @@
                 usernameValid = true
                 enableSubmit()
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+                console.log('Something went wrong. Try again')
+            })
         }       
     </script>
 

@@ -1,8 +1,7 @@
 package controllers
 
 import (
-	"fmt"
-
+	//"fmt"
 	"github.com/Yash294/TODO/repos"
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,18 +26,18 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	success, err := repos.Login(result.Username, result.Password)
+	err := repos.Login(result.Username, result.Password)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": "Failed to check user login credentials",
+			"message": err.Error,
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"data": success,
+		"message": "User logged in successfully.",
 	})
 }
 
@@ -59,12 +58,44 @@ func Signup(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": "Failed to create a new user.",
+			"message": err.Error,
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
+		"message": "User signed up successfully.",
+	})
+}
+
+func ResetPassword(c *fiber.Ctx) error {
+	type UserInfo struct {
+		Username    string `json:"username"`
+		Password    string `json:"password"`
+		NewPassword string `json:"newPassword"`
+	}
+
+	var result UserInfo
+
+	if err := c.BodyParser(&result); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Incorrect data format sent to server.",
+		})
+	}
+
+	err := repos.ChangePassword(result.Username, result.Password, result.NewPassword)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Password changed successfully.",
 	})
 }
 
@@ -82,20 +113,18 @@ func CheckIfUsernameExists(c *fiber.Ctx) error {
 		})
 	}
 
-	fmt.Println(result.Username)
-	exists, err := repos.CheckIfUsernameExists(result.Username)
+	usernameAvailable, err := repos.IsUsernameAvailable(result.Username)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": "Failed to check username existence.",
+			"message": err.Error,
 		})
 	}
 
-	fmt.Println("HELLO")
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"data": exists,
+		"message": "Username check successful",
+		"data":    usernameAvailable,
 	})
 }

@@ -23,12 +23,45 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password">
                 <div id="pwd-alert"></div>
-                <p>Forgot your password? <a>Reset here.</a></p>
+                <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
             </div>
             <button id="submit-btn" class="btn btn-primary pb-2">Submit</button>
         </form>
         
         <p>New to TODO? <a href="./signup">Signup here.</a></p>
+    </div>
+
+    <div id="forgotPassword" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Reset Password</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form id="reset-form">
+                    <div class="form-group">
+                        <label for="reset-username">Username</label>
+                        <input type="text" class="form-control" id="reset-username" placeholder="Username123">
+                    </div>
+                    <div class="form-group">
+                        <label for="reset-password">Password</label>
+                        <input type="password" class="form-control" id="reset-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" class="form-control" id="new-password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="reset-btn" class="btn btn-primary">Reset</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
     </div>
 
     <script>
@@ -84,7 +117,9 @@
             enableSubmit()
         })
 
-        document.getElementById('login-form').addEventListener("submit", function(e) {
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault()
+
             fetch('/user/login', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -94,9 +129,19 @@
                 headers: {
                     'Content-type': 'application/json'
                 }
-            }).then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error('HTTP error, status =', res.status)
+                }
+                return res.json()
+            })
+            .then(res => {
+                alert(res.message) 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
         })
 
         function validationFailure(alert, message) {
@@ -116,6 +161,49 @@
                 submitBtn.disabled = false
             }
         } 
+
+        // RESET PASSWORD FUNCTIONALITY
+
+        let resetUsername, resetPassword, newPassword
+        document.getElementById('reset-username').addEventListener('input', function(e) {
+            resetUsername = e.target.value
+        })
+
+        document.getElementById('reset-password').addEventListener('input', function(e) {
+            resetPassword = e.target.value
+        })
+
+        document.getElementById('new-password').addEventListener('input', function(e) {
+            newPassword = e.target.value
+        })
+
+        document.getElementById('reset-btn').addEventListener('click', function(e) {
+            e.preventDefault()
+            
+            fetch('/user/login/resetPassword', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: resetUsername,
+                    password: resetPassword,
+                    newPassword: newPassword
+                }),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error('HTTP error, status =', res.status)
+                }
+                return res.json()
+            })
+            .then(res => {
+                alert(res.message)
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+        })
 
     </script>
 

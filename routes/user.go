@@ -11,4 +11,5 @@ func UserRoutes(route fiber.Router) {
 	route.Post("/signup/usernames", controllers.CheckIfUsernameExists)
 	route.Post("/login", controllers.Login)
 	route.Post("/signup", controllers.Signup)
+	route.Post("/login/resetPassword", controllers.ResetPassword)
 }
