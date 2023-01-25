@@ -6,141 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-</head>
 
-<body>
-    <div class="container">
-        <h1 class="pb-2 text-muted">TODO...</h1>
-        <h3>Signup</h3>
-        <p>Welcome to the TODO task management application. Please signup below.</p>
-        <form id="signup-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control mb-3" id="username" placeholder="Username123">
-                <div id="username-alert"></div>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control mb-3" id="password">
-            </div> 
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control mb-3" id="confirmPassword">
-                <div id="pwd-match-alert"></div>
-            </div>
-            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Submit</button>
-        </form>
-
-        <p>Have an account? <a href="./login">Login here.</a></p>
-    <div> 
-    </div>
-
-    <script>
+    <script type="text/javascript">
         
         /* WORK LEFT: 
-                Optimization: Instead of requesting whole array of usernames, simply send inputted username and return true or false
-                Need confirmation success notification/failure (depending on db success/crash)
-                    - After success, redirect to blank dashboard
+                - Need to figure out how to work external js files
+                - After success, redirect to blank dashboard
         */
 
-        // get form properties 
-        let username, password, confirmPassword
-        let submitBtn = document.getElementById('submit-btn')
-        let usernameAlert = document.getElementById('username-alert')
-        let passwordAlert = document.getElementById('pwd-match-alert')
-        let usernameTimeout = null
-        let usernameValid = false, passwordsValid = false
-
-        // alphanumeric regex
-        let exp = /^[a-z0-9]+$/i;
-
         // listen to form inputs
-        document.getElementById('username').addEventListener('keyup', function(e){
-            username = e.target.value
+        function submitSignupForm(event, form) {
+            let email = document.getElementById('email').value
+            let password = document.getElementById('password').value
+            let confirmPassword = document.getElementById('confirm-password').value
 
-            if (username.length === 0) {
-                validationNeutral(usernameAlert)
-                usernameValid = false
-                return
+            let data = {
+                email: email,
+                password: password,
             }
 
-            if ((username.length < 5 || username.length > 20) || !username.match(exp)) {
-                validationFailure(usernameAlert, 'Username must be alphanumeric and between 5-20 characters.')
-                usernameValid = false
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!')
                 return
-            }
+            }   
 
-            clearTimeout(usernameTimeout)
-            usernameTimeout = setTimeout(checkExistingUsername, 1000)
-        })
-
-        document.getElementById('password').addEventListener('input', function(e){
-            password = e.target.value
-
-            if (password != confirmPassword) {
-                validationFailure(passwordAlert, 'Passwords do not match')
-                passwordsValid = false
-                return
-            }
-
-            if (password.length === 0) {
-                validationNeutral(passwordAlert)
-                passwordsValid = false
-                return
-            }
-
-            if ((password.length < 5 || password.length > 20) || !password.match(exp)) { 
-                validationFailure(passwordAlert, 'Password must be alphanumeric and between 5-20 characters.')
-                passwordsValid = false
-                return
-            } 
-            validationSuccess(passwordAlert, 'Passwords look good!')
-            passwordsValid = true
-            enableSubmit()
-        })
-
-        document.getElementById('confirmPassword').addEventListener('input', function(e){
-            confirmPassword = e.target.value
-
-            if (confirmPassword != password) {
-                validationFailure(passwordAlert, 'Passwords do not match')
-                passwordsValid = false
-                return
-            }
-
-            if (confirmPassword.length === 0) {
-                validationNeutral(passwordAlert)
-                passwordsValid = false
-                return
-            }
-
-            if  ((confirmPassword.length < 5 || confirmPassword.length > 20) || !confirmPassword.match(exp)) { 
-                validationFailure(passwordAlert, 'Confirmation must be alphanumeric and between 5-20 characters.')
-                passwordsValid = false
-                return
-            }
-            validationSuccess(passwordAlert, 'Passwords look good!')
-            passwordsValid = true
-            enableSubmit() 
-        })  
-        
-        // wait for submit
-        document.getElementById('signup-form').addEventListener("submit", function(e) {
-            e.preventDefault()
-            
             fetch('/user/signup', {
                 method: 'POST',
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                }),
+                body: JSON.stringify(data),
                 headers: {
                     'Content-type': 'application/json'
-                }
+                },
             }).then(res => { 
                 console.log(res)
                 if (!res.ok) {
-                    throw new Error('HTTP error, status =', res.status)
+                    throw new Error(`HTTP error, status = ${res.status}`)
                 }
                 return res.json()
             }).then(res => {
@@ -150,70 +49,37 @@
                 console.log(err)
                 alert('Something went wrong. Try again.')
             })
-        })
 
-        function validationFailure(alert, message) {
-            alert.className = 'alert alert-danger'
-            alert.textContent = message
-            submitBtn.disabled = true
-        }
-
-        function validationNeutral(alert) {
-            alert.className = ''
-            alert.textContent = ''
-            submitBtn.disabled = true
-        }
-
-        function validationSuccess(alert, message) {
-            alert.className = 'alert alert-success'
-            alert.textContent = message
-            submitBtn.disabled = true
-        }
-
-        function enableSubmit() {
-            if (usernameValid && passwordsValid) {
-                submitBtn.disabled = false
-            }
-        } 
-
-        function checkExistingUsername() {
-
-            console.log(username)
-            fetch('/user/signup/usernames', {
-                method: 'POST',
-                body: JSON.stringify({
-                    username: username
-                }),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(res => {
-                console.log(res)
-                if (!res.ok) {
-                    throw new Error('HTTP error, status =', res.status)
-                }
-                return res.json()
-            })
-            .then(res => {
-                console.log(res)
-                
-                if (!res.data) {
-                   validationFailure(usernameAlert, 'Username already exists.')
-                   usernameValid = false
-                   return
-                }
-                
-                validationSuccess(usernameAlert, 'Username looks good!', usernameValid)
-                usernameValid = true
-                enableSubmit()
-            })
-            .catch(err => {
-                console.log(err)
-                console.log('Something went wrong. Try again')
-            })
-        }       
+            event.preventDefault()
+        }           
     </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="pb-2 text-muted">TODO...</h1>
+        <h3>Signup</h3>
+        <h4>Welcome to the TODO task management application. Please signup below.</h4>
+        <p>Passwords should be 8-64 characters with at least: 1 uppercase, 1 lowercase, 1 number, 1 symbol</p>
+        <form id="signup-form" onsubmit="submitSignupForm(event, this)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+            </div> 
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control mb-3" id="confirm-password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+            </div>
+            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Submit</button>
+        </form>
+
+        <p>Have an account? <a href="./login">Login here.</a></p>
+    <div> 
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>

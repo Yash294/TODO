@@ -1,3 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <title>TODO App</title> 
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script>
+        /* WORK LEFT: 
+                Need an API call to ensure email and password exist and are correct (search by email in db, then check pwd). 
+                Success notification/failed
+                    - After success, redirect to existing dashboard
+        */
+
+        function submitLoginForm(event, form) {
+            let email = document.getElementById('email').value
+            let password = document.getElementById('password').value
+
+            let data = {
+                email: email,
+                password: password,
+            }
+
+            fetch('/user/login', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                return res.json()
+            })
+            .then(res => {
+                alert(res.message) 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+
+            event.preventDefault()
+        }
+
+        // RESET PASSWORD FUNCTIONALITY
+
+        function submitResetPasswordForm(event, form) {
+            let resetEmail = document.getElementById('reset-email').value
+            let resetPassword = document.getElementById('reset-password').value
+            let newPassword = document.getElementById('new-password').value
+
+            let data = {
+                email: resetEmail,
+                password: resetPassword,
+                newPassword: newPassword
+            }
+
+            fetch('/user/login/resetPassword', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                return res.json()
+            })
+            .then(res => {
+                alert(res.message)
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+
+            event.preventDefault()
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="pb-2 text-muted">TODO...</h1>
+        <p>Welcome to the TODO task management application. Please login below.</p>
+        <form id="login-form" onsubmit="submitLoginForm(event, this)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
+            </div>
+            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
+        </form>
+        
+        <p>New to TODO? <a href="./signup">Signup here.</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+</body>
+
 <script>
     // Will come into play later after backend is fully functional
 

@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `json:"username" validate:"omitempty,min=5,max=16,alphanum"`
-	Password string `json:"password" validate:"omitempty,min=5,max=16,alphanum"`
+	Email string `json:"email" validate:"omitempty,max=64" gorm:"uniqueIndex"`
+	Password string `json:"password" validate:"omitempty,min=8,max=64"`
 	Tasks    []Task `json:"tasks" gorm:"foreignKey:TaskName"`
 }

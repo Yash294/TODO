@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	//"fmt"
+	"fmt"
 	"github.com/Yash294/TODO/repos"
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,7 +16,7 @@ func RenderSignup(c *fiber.Ctx) error {
 
 func Login(c *fiber.Ctx) error {
 	type LoginInfo struct {
-		Username string `json:"username"`
+		Email string `json:"email"`
 		Password string `json:"password"`
 	}
 
@@ -26,7 +26,7 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	err := repos.Login(result.Username, result.Password)
+	err := repos.Login(result.Email, result.Password)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -43,17 +43,18 @@ func Login(c *fiber.Ctx) error {
 
 func Signup(c *fiber.Ctx) error {
 	type NewSignup struct {
-		Username string `json:"username"`
+		Email string `json:"email"`
 		Password string `json:"password"`
 	}
 
 	var result NewSignup
 
 	if err := c.BodyParser(&result); err != nil {
+		fmt.Println(result.Email, result.Password)
 		return err
 	}
 
-	err := repos.CreateUser(result.Username, result.Password)
+	err := repos.CreateUser(result.Email, result.Password)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -70,7 +71,7 @@ func Signup(c *fiber.Ctx) error {
 
 func ResetPassword(c *fiber.Ctx) error {
 	type UserInfo struct {
-		Username    string `json:"username"`
+		Email    string `json:"email"`
 		Password    string `json:"password"`
 		NewPassword string `json:"newPassword"`
 	}
@@ -84,7 +85,7 @@ func ResetPassword(c *fiber.Ctx) error {
 		})
 	}
 
-	err := repos.ChangePassword(result.Username, result.Password, result.NewPassword)
+	err := repos.ChangePassword(result.Email, result.Password, result.NewPassword)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -99,12 +100,12 @@ func ResetPassword(c *fiber.Ctx) error {
 	})
 }
 
-func CheckIfUsernameExists(c *fiber.Ctx) error {
-	type UsernameCheck struct {
-		Username string `json:"username"`
+func CheckIfEmailExists(c *fiber.Ctx) error {
+	type emailCheck struct {
+		Email string `json:"email"`
 	}
 
-	var result UsernameCheck
+	var result emailCheck
 
 	if err := c.BodyParser(&result); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -113,7 +114,7 @@ func CheckIfUsernameExists(c *fiber.Ctx) error {
 		})
 	}
 
-	usernameAvailable, err := repos.IsUsernameAvailable(result.Username)
+	emailAvailable, err := repos.IsemailAvailable(result.Email)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -124,7 +125,7 @@ func CheckIfUsernameExists(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"message": "Username check successful",
-		"data":    usernameAvailable,
+		"message": "email check successful",
+		"data":    emailAvailable,
 	})
 }

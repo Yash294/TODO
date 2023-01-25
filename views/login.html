@@ -6,132 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-</head>
-
-<body>
-    <div class="container">
-        <h1 class="pb-2 text-muted">TODO...</h1>
-        <h3>Login</h3>
-        <p>Welcome to the TODO task management application. Please login below.</p>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Username123">
-                <div id="username-alert"></div>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password">
-                <div id="pwd-alert"></div>
-                <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
-            </div>
-            <button id="submit-btn" class="btn btn-primary pb-2">Submit</button>
-        </form>
-        
-        <p>New to TODO? <a href="./signup">Signup here.</a></p>
-    </div>
-
-    <div id="forgotPassword" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Reset Password</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <form id="reset-form">
-                    <div class="form-group">
-                        <label for="reset-username">Username</label>
-                        <input type="text" class="form-control" id="reset-username" placeholder="Username123">
-                    </div>
-                    <div class="form-group">
-                        <label for="reset-password">Password</label>
-                        <input type="password" class="form-control" id="reset-password">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-password">New Password</label>
-                        <input type="password" class="form-control" id="new-password">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" id="reset-btn" class="btn btn-primary">Reset</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-    </div>
-
     <script>
         /* WORK LEFT: 
-                Need an API call to ensure username and password exist and are correct (search by username in db, then check pwd). 
+                Need an API call to ensure email and password exist and are correct (search by email in db, then check pwd). 
                 Success notification/failed
                     - After success, redirect to existing dashboard
         */
-        let username, password
-        let usernameAlert = document.getElementById('username-alert')
-        let passwordAlert = document.getElementById('pwd-alert')
-        let submitBtn = document.getElementById('submit-btn')
-        let usernameValid = false, passwordValid = false
 
-        // alphanumeric regex
-        let exp = /^[a-z0-9]+$/i;
+        function submitLoginForm(event, form) {
+            let email = document.getElementById('email').value
+            let password = document.getElementById('password').value
 
-        document.getElementById('username').addEventListener('input', function(e) {
-            username = e.target.value
-
-            if (username.length === 0) {
-                validationNeutral(usernameAlert)
-                usernameValid = false
-                return
+            let data = {
+                email: email,
+                password: password,
             }
-
-            if ((username.length < 5 || username.length > 20) || !username.match(exp)) { 
-                validationFailure(usernameAlert, 'Username must be alphanumeric and between 5-20 characters.')
-                usernameValid = false
-                return
-            } 
-            validationNeutral(usernameAlert)
-            usernameValid = true
-            enableSubmit()
-        })
-
-        document.getElementById('password').addEventListener('input', function(e) {
-            password = e.target.value
-
-            if (password.length === 0) {
-                validationNeutral(passwordAlert)
-                passwordValid = false
-                return
-            }
-
-            if ((password.length < 5 || password.length > 20) || !password.match(exp)) { 
-                validationFailure(passwordAlert, 'Password must be alphanumeric and between 5-20 characters.')
-                passwordValid = false
-                return
-            } 
-            validationNeutral(passwordAlert)
-            passwordValid = true
-            enableSubmit()
-        })
-
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault()
 
             fetch('/user/login', {
                 method: 'POST',
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                }),
+                body: JSON.stringify(data),
                 headers: {
                     'Content-type': 'application/json'
-                }
+                },
             }).then(res => {
                 if (!res.ok) {
-                    throw new Error('HTTP error, status =', res.status)
+                    throw new Error(`HTTP error, status = ${res.status}`)
                 }
                 return res.json()
             })
@@ -142,57 +41,32 @@
                 console.log(err)
                 alert('Something went wrong. Try again.')
             })
-        })
 
-        function validationFailure(alert, message) {
-            alert.className = 'alert alert-danger'
-            alert.textContent = message
-            submitBtn.disabled = true
+            event.preventDefault()
         }
-
-        function validationNeutral(alert) {
-            alert.className = ''
-            alert.textContent = ''
-            submitBtn.disabled = true
-        }
-
-        function enableSubmit() {
-            if (usernameValid && passwordValid) {
-                submitBtn.disabled = false
-            }
-        } 
 
         // RESET PASSWORD FUNCTIONALITY
 
-        let resetUsername, resetPassword, newPassword
-        document.getElementById('reset-username').addEventListener('input', function(e) {
-            resetUsername = e.target.value
-        })
+        function submitResetPasswordForm(event, form) {
+            let resetEmail = document.getElementById('reset-email').value
+            let resetPassword = document.getElementById('reset-password').value
+            let newPassword = document.getElementById('new-password').value
 
-        document.getElementById('reset-password').addEventListener('input', function(e) {
-            resetPassword = e.target.value
-        })
+            let data = {
+                email: resetEmail,
+                password: resetPassword,
+                newPassword: newPassword
+            }
 
-        document.getElementById('new-password').addEventListener('input', function(e) {
-            newPassword = e.target.value
-        })
-
-        document.getElementById('reset-btn').addEventListener('click', function(e) {
-            e.preventDefault()
-            
             fetch('/user/login/resetPassword', {
                 method: 'POST',
-                body: JSON.stringify({
-                    username: resetUsername,
-                    password: resetPassword,
-                    newPassword: newPassword
-                }),
+                body: JSON.stringify(data),
                 headers: {
                     'Content-type': 'application/json'
-                }
+                },
             }).then(res => {
                 if (!res.ok) {
-                    throw new Error('HTTP error, status =', res.status)
+                    throw new Error(`HTTP error, status = ${res.status}`)
                 }
                 return res.json()
             })
@@ -203,9 +77,68 @@
                 console.log(err)
                 alert('Something went wrong. Try again.')
             })
-        })
+
+            event.preventDefault()
+        }
 
     </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="pb-2 text-muted">TODO...</h1>
+        <h3>Login</h3>
+        <p>Welcome to the TODO task management application. Please login below.</p>
+        <form id="login-form" onsubmit="submitLoginForm(event, this)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
+            </div>
+            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
+        </form>
+        
+        <p>New to TODO? <a href="./signup">Signup here.</a></p>
+
+        <div id="forgotPassword" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Reset Password</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form id="reset-form" onsubmit="submitResetPasswordForm(event, this)">
+                        <div class="form-group">
+                            <label for="reset-email">Email</label>
+                            <input type="text" class="form-control" id="reset-email" placeholder="user123@domain.com" maxlength="64" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reset-password">Password</label>
+                            <input type="password" class="form-control" id="reset-password"  minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" class="form-control" id="new-password"  minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                        </div>
+                        <button type="submit" id="reset-btn" class="btn btn-primary">Reset</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
 
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
