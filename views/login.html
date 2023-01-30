@@ -13,7 +13,7 @@
                     - After success, redirect to existing dashboard
         */
 
-        function submitLoginForm(event, form) {
+        function submitLoginForm(event) {
             let email = document.getElementById('email').value
             let password = document.getElementById('password').value
 
@@ -47,7 +47,7 @@
 
         // RESET PASSWORD FUNCTIONALITY
 
-        function submitResetPasswordForm(event, form) {
+        function submitResetPasswordForm(event) {
             let resetEmail = document.getElementById('reset-email').value
             let resetPassword = document.getElementById('reset-password').value
             let newPassword = document.getElementById('new-password').value
@@ -89,23 +89,24 @@
         <h1 class="pb-2 text-muted">TODO...</h1>
         <h3>Login</h3>
         <p>Welcome to the TODO task management application. Please login below.</p>
-        <form id="login-form" onsubmit="submitLoginForm(event, this)">
+        <form id="login-form" onsubmit="submitLoginForm(event)">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required></div>
                 <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
             </div>
             <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
+            <p>New to TODO? <a href="./signup">Signup here.</a></p>
         </form>
         
-        <p>New to TODO? <a href="./signup">Signup here.</a></p>
+        
 
         <div id="forgotPassword" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Reset Password</h5>
@@ -114,7 +115,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form id="reset-form" onsubmit="submitResetPasswordForm(event, this)">
+                    <form id="reset-form" onsubmit="submitResetPasswordForm(event)">
                         <div class="form-group">
                             <label for="reset-email">Email</label>
                             <input type="text" class="form-control" id="reset-email" placeholder="user123@domain.com" maxlength="64" required>

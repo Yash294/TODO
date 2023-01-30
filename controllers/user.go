@@ -35,6 +35,14 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	// sess, sessErr := store.Get(c)
+	// if sessErr != nil {
+	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+	// 		"success": false,
+	// 		"message": sessErr.Error,
+	// 	})
+	// }
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "User logged in successfully.",
@@ -97,35 +105,5 @@ func ResetPassword(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "Password changed successfully.",
-	})
-}
-
-func CheckIfEmailExists(c *fiber.Ctx) error {
-	type emailCheck struct {
-		Email string `json:"email"`
-	}
-
-	var result emailCheck
-
-	if err := c.BodyParser(&result); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"success": false,
-			"message": "Incorrect data format sent to server.",
-		})
-	}
-
-	emailAvailable, err := repos.IsemailAvailable(result.Email)
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"success": false,
-			"message": err.Error,
-		})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
-		"message": "email check successful",
-		"data":    emailAvailable,
 	})
 }

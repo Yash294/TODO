@@ -10,5 +10,5 @@ func UserRoutes(route fiber.Router) {
 	route.Get("/signup", controllers.RenderSignup)
 	route.Post("/login", controllers.Login)
 	route.Post("/signup", controllers.Signup)
-	route.Post("/login/resetPassword", controllers.ResetPassword)
+	route.Patch("/login/resetPassword", controllers.ResetPassword)
 }
