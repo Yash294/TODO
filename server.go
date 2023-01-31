@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/routes"
 	"github.com/gofiber/fiber/v2"
@@ -18,7 +17,7 @@ func setupRoutes(app *fiber.App) {
 	routes.TaskRoutes(taskGroup)
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Redirect("/user/signup")
+		return c.Redirect("/user/login")
 	})
 
 	// app.Get("/tasks/:userId", func(c *fiber.Ctx) error {

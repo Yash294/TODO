@@ -8,7 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <script>
-        let taskList
+        let deleteTaskName
+
+        function setEditValues(taskName, description, isDone) {
+            document.getElementById('edit-task-name').value = taskName
+            document.getElementById('edit-description').value = description
+            document.getElementById('edit-is-done').value = isDone
+        }
+
+        function setDeleteValue(taskName) {
+            deleteTaskName = taskName
+        }
 
         function submitAddForm(event) {
             let taskName = document.getElementById('add-task-name').value
@@ -53,7 +63,7 @@
             }
 
             fetch('/task/edit', {
-                method: 'POST',
+                method: 'PATCH',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-type': 'application/json'
@@ -73,22 +83,6 @@
             })
 
             event.preventDefault()
-        }
-
-        function submitLogout(event) {
-            console.log('Logout works!')
-        }
-
-        function setEditValues(taskName, description, isDone) {
-            document.getElementById('edit-task-name').value = taskName
-            document.getElementById('edit-description').value = description
-            document.getElementById('edit-is-done').value = isDone
-        }
-
-        let deleteTaskName
-
-        function setDeleteValue(taskName) {
-            deleteTaskName = taskName
         }
 
         function submitDeleteForm(event) {
@@ -117,36 +111,9 @@
             })
         }
 
-        // function loadTasks() {
-        //     fetch('/task/getTasks', {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-type': 'application/json'
-        //         },
-        //     }).then(res => {
-        //         console.log(res)
-        //         if (!res.ok) {
-        //             throw new Error(`HTTP error, status = ${res.status}`)
-        //         }
-        //         return res.json()
-        //     })
-        //     .then(res => {
-        //         taskList = res.data
-        //         renderTasks()
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //         alert('Something went wrong. Try again.')
-        //     })
-        // }
-
-        // function renderTasks() {
-        //     for (task in taskList) {
-        //         let elem = document.createElement('div')
-        //         elem.className = "alert alert-dark"
-        //     }
-        // }
-        // Will come into play later after backend is fully functional
+        function submitLogout(event) {
+            console.log('Logout works!')
+        }
     
         /* 
             Some functionalities that come to mind right now (Jan. 17, 2023)

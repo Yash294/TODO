@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"github.com/Yash294/TODO/models"
 	"github.com/Yash294/TODO/repos"
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,23 +15,19 @@ func RenderSignup(c *fiber.Ctx) error {
 }
 
 func Login(c *fiber.Ctx) error {
-	type LoginInfo struct {
-		Email string `json:"email"`
-		Password string `json:"password"`
+	var data models.User
+
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
 	}
 
-	var result LoginInfo
-
-	if err := c.BodyParser(&result); err != nil {
-		return err
-	}
-
-	err := repos.Login(result.Email, result.Password)
-
-	if err != nil {
+	if err := repos.Login(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -50,21 +46,16 @@ func Login(c *fiber.Ctx) error {
 }
 
 func Signup(c *fiber.Ctx) error {
-	type NewSignup struct {
-		Email string `json:"email"`
-		Password string `json:"password"`
+	var data models.User
+
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
 	}
 
-	var result NewSignup
-
-	if err := c.BodyParser(&result); err != nil {
-		fmt.Println(result.Email, result.Password)
-		return err
-	}
-
-	err := repos.CreateUser(result.Email, result.Password)
-
-	if err != nil {
+	if err := repos.CreateUser(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,
@@ -78,24 +69,16 @@ func Signup(c *fiber.Ctx) error {
 }
 
 func ResetPassword(c *fiber.Ctx) error {
-	type UserInfo struct {
-		Email    string `json:"email"`
-		Password    string `json:"password"`
-		NewPassword string `json:"newPassword"`
-	}
+	var data repos.PasswordResetInfo
 
-	var result UserInfo
-
-	if err := c.BodyParser(&result); err != nil {
+	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"message": "Incorrect data format sent to server.",
 		})
 	}
 
-	err := repos.ChangePassword(result.Email, result.Password, result.NewPassword)
-
-	if err != nil {
+	if err := repos.ChangePassword(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,

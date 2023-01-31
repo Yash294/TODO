@@ -1,20 +1,22 @@
 package repos
 
 import (
-	"fmt"
 	"errors"
 	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/models"
 	"gorm.io/gorm"
 )
 
-func Login(email string, password string) error {
+type PasswordResetInfo struct {
+	Email    string `json:"email"`
+	Password    string `json:"password"`
+	NewPassword string `json:"newPassword"`
+}
+
+func Login(data *models.User) error {
 	// query db to check if email and passwords match
 	var query models.User
-	result := database.DB.Model(models.User{}).Select("email", "password").Where("email = ? AND password = ?", email, password).First(&query)
-
-	fmt.Println(query)
-	fmt.Println(result.Error)
+	result := database.DB.Model(models.User{}).Select("email", "password").Where("email = ? AND password = ?", data.Email, data.Password).First(&query)
 
 	// if error is not nil, check cause, otherwise return nil for success
 	if result.Error != nil {
@@ -29,12 +31,10 @@ func Login(email string, password string) error {
 	return nil
 }
 
-func CreateUser(email string, password string) error {
+func CreateUser(data *models.User) error {
 	// create the user as expected
-	var user = models.User{ Email: email, Password: password}
-	result := database.DB.Create(&user)
+	result := database.DB.Create(&data)
 
-	// NEED TO CHECK uniqueness
 	// if unsuccessful, throw an error, otherwise return nil
 	if result.Error != nil {
 		return errors.New("failed to create requested user")
@@ -42,10 +42,10 @@ func CreateUser(email string, password string) error {
 	return nil
 }
 
-func ChangePassword(email string, currentPassword string, newPassword string) error {
+func ChangePassword(data *PasswordResetInfo) error {
 	// query db to see if user credentials exist
 	var query models.User
-	result := database.DB.Where("email = ? AND password = ?", email, currentPassword).First(&query)
+	result := database.DB.Where("email = ? AND password = ?", data.Email, data.Password).First(&query)
 
 	// is the error is not nil check cause
 	if result.Error != nil {
@@ -59,31 +59,11 @@ func ChangePassword(email string, currentPassword string, newPassword string) er
 	}
 
 	// otherwise now we can update the user's password
-	result = database.DB.Model(models.User{}).Where("email = ?", email).Update("password", newPassword)
+	result = database.DB.Model(models.User{}).Where("email = ?", data.Email).Update("password", data.NewPassword)
 
 	// if update not successful, then throw an error, otherwise return nil
 	if result.Error != nil {
 		return errors.New("failed to update user password")
 	}
 	return nil
-}
-
-func IsemailAvailable(email string) (bool, error) {
-	// query db to see if email exists already
-	var query string
-	result := database.DB.Model(models.User{}).Select("email").Where("email = ?", email).First(&query)
-
-	// if the error is not nil, check cause
-	if result.Error != nil {
-		// if no record found, email available so return true
-		// otherwise return error
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return true, nil
-		} else {
-			return false, errors.New("failed to retrieve email")
-		}
-	}
-
-	// email not available so return false
-	return false, nil
 }
