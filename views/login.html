@@ -96,13 +96,14 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required></div>
+                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
                 <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
+            </div> 
+            <div class="form-group">
+                <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
+                <p>New to TODO? <a href="./signup">Signup here.</a></p>
             </div>
-            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
-            <p>New to TODO? <a href="./signup">Signup here.</a></p>
         </form>
-        
         
 
         <div id="forgotPassword" class="modal" tabindex="-1" role="dialog">
