@@ -106,7 +106,18 @@
         }
 
         function submitLogout(event) {
-            console.log('Logout works!')
+            fetch('/user/logout')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                alert('Logout successful')
+                window.location.href = '/user/login'
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
         }
     
         /* 

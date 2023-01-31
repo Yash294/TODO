@@ -90,3 +90,10 @@ func ResetPassword(c *fiber.Ctx) error {
 		"message": "Password changed successfully.",
 	})
 }
+
+func Logout(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Logout Successful.",
+	})
+}
