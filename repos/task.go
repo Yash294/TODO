@@ -1,6 +1,7 @@
 package repos
 
 import (
+	//"fmt"
 	"errors"
 	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/models"
@@ -32,7 +33,7 @@ func AddTask(data *models.Task) error {
 }
 
 func EditTask(data *models.Task) error {
-	result := database.DB.Model(models.Task{}).Updates(&data)
+	result := database.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Updates(&data)
 
 	if result.Error != nil {
 		return errors.New("failed to update task")
@@ -41,7 +42,7 @@ func EditTask(data *models.Task) error {
 }
 
 func DeleteTask(data *models.Task) error {
-	result := database.DB.Model(models.Task{}).Delete(&data)
+	result := database.DB.Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Delete(&models.Task{})
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")

@@ -70,10 +70,11 @@ func main() {
 	// 	Expiration: time.Hour * 4,
 	// })
 
-	// app.Use(AuthMiddleware(), cors.New(cors.Config{
-	// 	AllowCredentials: true,
-	// 	AllowOrigins: "*",
-	// 	AllowHeaders: "Access-Control-Allow-Origin, Content-Type, Origin,"
+	// app.Use(cors.New(cors.Config{
+	//  	AllowCredentials: true,
+	//  	AllowOrigins: "*",
+	//  	AllowHeaders: "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
+	// 		AllowMethods: "GET, POST, PATCH, DELETE",
 	// }))
 
 	setupRoutes(app)

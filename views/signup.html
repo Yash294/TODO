@@ -41,9 +41,8 @@
                 if (!res.ok) {
                     throw new Error(`HTTP error, status = ${res.status}`)
                 }
-                return res.json()
-            }).then(res => {
-                alert(res.message)
+                alert('Your account was created successfully!')
+                window.location.href = '/user/login'
             })
             .catch(err => {
                 console.log(err)

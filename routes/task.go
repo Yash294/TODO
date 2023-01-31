@@ -8,6 +8,6 @@ import (
 func TaskRoutes(route fiber.Router) {
 	route.Get("/dashboard", controllers.RenderTasks)
 	route.Post("/add", controllers.AddTask)
-	route.Patch("/edit", controllers.EditTask)
-	route.Delete("/delete", controllers.DeleteTask)
+	route.Post("/edit", controllers.EditTask)
+	route.Post("/delete", controllers.DeleteTask)
 }
