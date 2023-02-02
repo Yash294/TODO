@@ -1,12 +1,11 @@
 package main
 
 import (
-	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/routes"
+	"github.com/Yash294/TODO/util"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
-	//"github.com/gofiber/fiber/v2/middleware/session"
-	//"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func setupRoutes(app *fiber.App) {
@@ -19,43 +18,7 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Redirect("/user/login")
 	})
-
-	// app.Get("/tasks/:userId", func(c *fiber.Ctx) error {
-	// 	return c.Render("dashboard", fiber.Map{})
-	// })
 }
-
-// var (
-// 	store *session.Store
-// 	AUTH_KEY string = "authenticated"
-// 	USER_ID string = "user_id"
-// )
-
-// func AuthMiddleware(c *fiber.Ctx) error {
-// 	sess, err := store.Get(c)
-
-// 	fmt.Println(strings.Split(c.Path(), "/")[1])
-
-// 	path := strings.Split(c.Path(), "/")[1] 
-
-// 	if path == "login" || path == "signup" {
-// 		return c.Next()
-// 	}
-
-// 	if err != nil {
-// 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-// 			"message": "Not authorized",
-// 		})
-// 	}
-
-// 	if sess.Get(AUTH_KEY) == nil {
-// 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-// 			"message": "Not authorized",
-// 		})
-// 	}
-
-// 	return c.Next()
-// }
 
 func main() {
 
@@ -65,21 +28,17 @@ func main() {
 		Views: engine,
 	})
 
-	// store := session.New(session.Config{
-	// 	CookieHTTPOnly: true,
-	// 	Expiration: time.Hour * 4,
-	// })
-
-	// app.Use(cors.New(cors.Config{
-	//  	AllowCredentials: true,
-	//  	AllowOrigins: "*",
-	//  	AllowHeaders: "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
-	// 		AllowMethods: "GET, POST, PATCH, DELETE",
-	// }))
+	app.Use(util.NewMiddleware(), cors.New(cors.Config{
+	 	AllowCredentials: true,
+	 	AllowOrigins: "*",
+	 	AllowHeaders: "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
+		AllowMethods: "GET, POST, PATCH, DELETE",
+	}))
 
 	setupRoutes(app)
 
-	database.Connect()
+	util.ConnectRedis()
+	util.ConnectDB()
 
 	app.Listen(":3000")
 }

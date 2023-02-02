@@ -1,8 +1,7 @@
-package database
+package util
 
 import (
 	"fmt"
-	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,14 +9,14 @@ import (
 
 var DB *gorm.DB
 
-func Connect() error {
+func ConnectDB() error {
 
-	config, err := util.LoadConfig(".")
+	config, err := LoadDBConfig(".")
     if err != nil {
         panic("Cannot load config")
     }
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", config.Host, config.DBUser, config.DBPass, config.DBName, config.DBPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", config.DBHost, config.DBUser, config.DBPass, config.DBName, config.DBPort)
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 

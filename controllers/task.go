@@ -1,17 +1,24 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/Yash294/TODO/models"
 	"github.com/Yash294/TODO/repos"
+	"github.com/Yash294/TODO/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 func RenderTasks(c *fiber.Ctx) error {
-	var data models.Task
 
-	data.Assignee = "yashp@gmail.com"
+	userId, err := util.GetSessionUserID(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
 
-	result, err := repos.GetTasks(&data)
+	result, err := repos.GetTasks(userId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -25,15 +32,26 @@ func RenderTasks(c *fiber.Ctx) error {
 }
 
 func AddTask(c *fiber.Ctx) error {
-	var data models.Task
 
-	if err := c.BodyParser(&data); err != nil {
-		return err
+	userId, err := util.GetSessionUserID(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
 	}
 
-	data.Assignee = "yashp@gmail.com"
+	var data models.Task
+	data.Assignee = userId
 
-	if err := repos.AddTask(&data); err != nil {
+	if err = c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
+
+	if err = repos.AddTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,
@@ -47,15 +65,27 @@ func AddTask(c *fiber.Ctx) error {
 }
 
 func EditTask(c *fiber.Ctx) error {
-	var data models.Task
-
-	data.Assignee = "yashp@gmail.com"
-
-	if err := c.BodyParser(&data); err != nil {
-		return err
+	userId, err := util.GetSessionUserID(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
 	}
 
-	if err := repos.EditTask(&data); err != nil {
+	var data models.Task
+	data.Assignee = userId
+
+	if err = c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
+
+	fmt.Println(data)
+
+	if err = repos.EditTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,
@@ -69,15 +99,25 @@ func EditTask(c *fiber.Ctx) error {
 }
 
 func DeleteTask(c *fiber.Ctx) error {
-	var data models.Task
-
-	if err := c.BodyParser(&data); err != nil {
-		return err
+	userId, err := util.GetSessionUserID(c)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
 	}
 
-	data.Assignee = "yashp@gmail.com"
+	var data models.Task
+	data.Assignee = userId
 
-	if err := repos.DeleteTask(&data); err != nil {
+	if err = c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
+
+	if err = repos.DeleteTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,

@@ -1,9 +1,8 @@
 package repos
 
 import (
-	//"fmt"
 	"errors"
-	"github.com/Yash294/TODO/database"
+	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
 )
 
@@ -13,9 +12,9 @@ type TaskInfo struct {
 	IsDone bool `json:"isDone"`
 }
 
-func GetTasks(data *models.Task) ([]TaskInfo, error) {
+func GetTasks(userId uint) ([]TaskInfo, error) {
 	var query []TaskInfo
-	result := database.DB.Model(models.Task{}).Select("task_name", "description", "is_done").Where("assignee = ?", data.Assignee).Find(&query)
+	result := util.DB.Model(models.Task{}).Where("assignee = ?", userId).Find(&query)
 
 	if result.Error != nil {
 		return query, errors.New("failed to retrieve tasks")
@@ -24,7 +23,7 @@ func GetTasks(data *models.Task) ([]TaskInfo, error) {
 }
 
 func AddTask(data *models.Task) error {
-	result := database.DB.Model(models.Task{}).Create(&data)
+	result := util.DB.Model(models.Task{}).Create(&data)
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")
@@ -33,7 +32,7 @@ func AddTask(data *models.Task) error {
 }
 
 func EditTask(data *models.Task) error {
-	result := database.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Updates(&data)
+	result := util.DB.Model(models.Task{}).Select("task_name", "description", "is_done").Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Updates(&data)
 
 	if result.Error != nil {
 		return errors.New("failed to update task")
@@ -42,7 +41,7 @@ func EditTask(data *models.Task) error {
 }
 
 func DeleteTask(data *models.Task) error {
-	result := database.DB.Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Delete(&models.Task{})
+	result := util.DB.Unscoped().Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Delete(&models.Task{})
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")

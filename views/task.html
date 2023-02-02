@@ -7,134 +7,6 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
-    <script>
-        let deleteTaskName
-
-        function setEditValues(taskName, description, isDone) {
-            document.getElementById('edit-task-name').value = taskName
-            document.getElementById('edit-description').value = description
-            document.getElementById('edit-is-done').value = isDone
-        }
-
-        function setDeleteValue(taskName) {
-            deleteTaskName = taskName
-        }
-
-        function submitAddForm(event) {
-            let taskName = document.getElementById('add-task-name').value
-            let description = document.getElementById('add-description').value
-
-            let data = {
-                taskName: taskName,
-                description: description
-            }
-
-            fetch('/task/add', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-type': 'application/json'
-                },
-            }).then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error, status = ${res.status}`)
-                }
-                alert('Task added successfully!')
-                window.location.href = '/task/dashboard'
-            })
-            .catch(err => {
-                console.log(err)
-                alert('Something went wrong. Try again.')
-            })
-
-            event.preventDefault()
-        }
-
-        function submitEditForm(event) {
-            let taskName = document.getElementById('edit-task-name').value
-            let description = document.getElementById('edit-description').value
-            let isDone = document.getElementById('edit-is-done').value
-
-            let data = {
-                taskName: taskName,
-                description: description
-            }
-
-            fetch('/task/edit', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-type': 'application/json'
-                },
-            }).then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error, status = ${res.status}`)
-                }
-                alert('Task edited successfully!')
-                window.location.href = '/task/dashboard'
-            })
-            .catch(err => {
-                console.log(err)
-                alert('Something went wrong. Try again.')
-            })
-
-            event.preventDefault()
-        }
-
-        function submitDeleteForm(event) {
-            let data = {
-                taskName: deleteTaskName,
-            }
-
-            fetch('/task/delete', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-type': 'application/json'
-                },
-            }).then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error, status = ${res.status}`)
-                }
-                alert('Task deleted successfully!')
-                window.location.href = '/task/dashboard'
-            })
-            .catch(err => {
-                console.log(err)
-                alert('Something went wrong. Try again.')
-            })
-        }
-
-        function submitLogout(event) {
-            fetch('/user/logout')
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error, status = ${res.status}`)
-                }
-                alert('Logout successful')
-                window.location.href = '/user/login'
-            })
-            .catch(err => {
-                console.log(err)
-                alert('Something went wrong. Try again.')
-            })
-        }
-    
-        /* 
-            Some functionalities that come to mind right now (Jan. 17, 2023)
-                - Add, delete button
-                    - Add uses a modal to add task name and description
-                        - Can have empty description but not empty task name
-                    - Delete uses a modal to confirm delete (so confirm and cancel buttons, nothing else)
-                    - Confirm the changes to db
-                - Each task is different colour and has title, description.
-                    - Task name and Description is editable so each task should have edit button in top right
-                        - Clicking edit should call a modal (bootstrap) to edit and change
-                        - Send changes to db or add save button then send to db
-                - Have a logout
-                    - Logout also uses a modal to confirm logout
-        */
-    </script>
 </head>
 
 <body>
@@ -268,6 +140,138 @@
             </div>
         </div>
     </div>
+
+    <script>
+        let deleteTaskName
+
+        function setEditValues(taskName, description, isDone) {
+            document.getElementById('edit-task-name').value = taskName
+            document.getElementById('edit-description').value = description
+            document.getElementById('edit-is-done').checked = isDone
+        }
+
+        function setDeleteValue(taskName) {
+            deleteTaskName = taskName
+        }
+
+        function submitAddForm(event) {
+            let taskName = document.getElementById('add-task-name').value
+            let description = document.getElementById('add-description').value
+
+            let data = {
+                taskName: taskName,
+                description: description
+            }
+
+            fetch('/task/add', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                alert('Task added successfully!')
+                window.location.reload() 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+
+            event.preventDefault()
+        }
+
+        function submitEditForm(event) {
+            let taskName = document.getElementById('edit-task-name').value
+            let description = document.getElementById('edit-description').value
+            let isDone = document.getElementById('edit-is-done').checked
+
+            console.log(isDone)
+
+            let data = {
+                taskName: taskName,
+                description: description,
+                isDone: isDone
+            }
+
+            fetch('/task/edit', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                alert('Task edited successfully!')
+                window.location.reload() 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+
+            event.preventDefault()
+        }
+
+        function submitDeleteForm(event) {
+            let data = {
+                taskName: deleteTaskName,
+            }
+
+            fetch('/task/delete', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                alert('Task deleted successfully!')
+                window.location.reload() 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+        }
+
+        function submitLogout(event) {
+            fetch('/user/logout')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error, status = ${res.status}`)
+                }
+                alert('Logout successful')
+                window.location.href = '/user/login' 
+            })
+            .catch(err => {
+                console.log(err)
+                alert('Something went wrong. Try again.')
+            })
+        }
+    
+        /* 
+            Some functionalities that come to mind right now (Jan. 17, 2023)
+                - Add, delete button
+                    - Add uses a modal to add task name and description
+                        - Can have empty description but not empty task name
+                    - Delete uses a modal to confirm delete (so confirm and cancel buttons, nothing else)
+                    - Confirm the changes to db
+                - Each task is different colour and has title, description.
+                    - Task name and Description is editable so each task should have edit button in top right
+                        - Clicking edit should call a modal (bootstrap) to edit and change
+                        - Send changes to db or add save button then send to db
+                - Have a logout
+                    - Logout also uses a modal to confirm logout
+        */
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
