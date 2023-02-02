@@ -2,7 +2,6 @@ package util
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,8 +13,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	sess, err := Store.Get(c)
 
 	path := c.Path()
-	
-	fmt.Println(c.Path())
 
 	if path == "/" || path == "/user/login" || path == "/user/signup" {
 		return c.Next()

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/Yash294/TODO/models"
 	"github.com/Yash294/TODO/repos"
 	"github.com/Yash294/TODO/util"
@@ -82,8 +81,6 @@ func EditTask(c *fiber.Ctx) error {
 			"message": err.Error,
 		})
 	}
-
-	fmt.Println(data)
 
 	if err = repos.EditTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

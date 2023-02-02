@@ -33,8 +33,8 @@
                             <span class="badge badge-danger">Incomplete</span>
                         {{ end }}
                         
-                        <button class="edit-btn" type="button" onclick="setEditValues({{ .TaskName }}, {{ .Description }}, {{ .IsDone }})" data-toggle="modal" data-target="#edit-task"><i class="bi bi-pencil"></i></button>
-                        <button class="delete-btn" type="button" onclick="setDeleteValue({{ .TaskName }})" data-toggle="modal" data-target="#delete-task"><i class="bi bi-trash"></i></button>                    
+                        <button class="btn btn-primary float-right" type="button" onclick="setDeleteValue({{ .TaskName }})" data-toggle="modal" data-target="#delete-task"><i class="bi bi-trash"></i></button>                    
+                        <button class="btn btn-primary float-right mr-2" type="button" onclick="setEditValues({{ .TaskName }}, {{ .Description }}, {{ .IsDone }})" data-toggle="modal" data-target="#edit-task"><i class="bi bi-pencil"></i></button>
                     </li>
                 {{ end }}
             </ul>
@@ -177,7 +177,6 @@
                 window.location.reload() 
             })
             .catch(err => {
-                console.log(err)
                 alert('Something went wrong. Try again.')
             })
 
@@ -188,8 +187,6 @@
             let taskName = document.getElementById('edit-task-name').value
             let description = document.getElementById('edit-description').value
             let isDone = document.getElementById('edit-is-done').checked
-
-            console.log(isDone)
 
             let data = {
                 taskName: taskName,
@@ -211,7 +208,6 @@
                 window.location.reload() 
             })
             .catch(err => {
-                console.log(err)
                 alert('Something went wrong. Try again.')
             })
 
@@ -237,7 +233,6 @@
                 window.location.reload() 
             })
             .catch(err => {
-                console.log(err)
                 alert('Something went wrong. Try again.')
             })
         }
@@ -252,7 +247,6 @@
                 window.location.href = '/user/login' 
             })
             .catch(err => {
-                console.log(err)
                 alert('Something went wrong. Try again.')
             })
         }
