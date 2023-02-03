@@ -20,8 +20,8 @@
                 <button type="submit" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#create-task">Create Task</button>
             </div>
         </div>
-        <div id="taskList" class="container">
-            <ul class="list-group">
+        <div id="taskContainer" class="container">
+            <ul id="taskList" class="list-group">
                 {{ range .data }}
                     <li class="list-group-item list-group-item-dark">
                         <h4>{{ .TaskName }}</h4>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group">
                             <label for="add-description">Description</label>
-                            <textarea name="Description" id="add-description" cols="30" rows="6" type="text" class="form-control" id="description" placeholder="Add a summary..." maxlength="256"></textarea>
+                            <textarea id="add-description" cols="30" rows="6" type="text" class="form-control" id="description" placeholder="Add a summary..." maxlength="256"></textarea>
                         </div>
                         <button type="submit" id="add-btn" class="btn btn-primary">Add</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -142,9 +142,11 @@
     </div>
 
     <script>
-        let deleteTaskName
+        let oldTaskName, deleteTaskName
 
         function setEditValues(taskName, description, isDone) {
+            oldTaskName = taskName 
+
             document.getElementById('edit-task-name').value = taskName
             document.getElementById('edit-description').value = description
             document.getElementById('edit-is-done').checked = isDone
@@ -173,8 +175,61 @@
                 if (!res.ok) {
                     throw new Error(`HTTP error, status = ${res.status}`)
                 }
-                alert('Task added successfully!')
-                window.location.reload() 
+
+                const task = document.createElement('li')
+                task.className = 'list-group-item list-group-item-dark'
+                task.id = taskName
+
+                const name = document.createElement('h4')
+                name.textContent = taskName
+
+                const taskDescription = document.createElement('p')
+                taskDescription.textContent = description
+
+                const taskCompleted = document.createElement('span')
+                taskCompleted.className = 'badge badge-danger'
+                taskCompleted.textContent = 'Incomplete'
+
+                const deleteButton = document.createElement('button')
+                deleteButton.className = 'btn btn-primary float-right'
+                deleteButton.type = 'button'
+                deleteButton.onclick = function() {
+                    setDeleteValue(name.textContent)
+                }
+                deleteButton.setAttribute("data-toggle", "modal")
+                deleteButton.setAttribute("data-target", "#delete-task")
+
+                const deleteIcon = document.createElement('i')
+                deleteIcon.className = "bi bi-trash"
+
+                const editButton = document.createElement('button')
+                editButton.className = 'btn btn-primary float-right mr-2'
+                editButton.type = 'button'
+                editButton.onclick = function() {
+                    if (taskCompleted.textContent = 'Incomplete') {
+                        setEditValues(name.textContent, taskDescription.textContent, false)
+                    } else {
+                        setEditValues(name.textContent, taskDescription.textContent, true)
+                    }
+                }
+                editButton.setAttribute("data-toggle", "modal")
+                editButton.setAttribute("data-target", "#edit-task")
+
+                const editIcon = document.createElement('i')
+                editIcon.className = "bi bi-pencil"
+
+                // build html tree
+                deleteButton.appendChild(deleteIcon)
+                editButton.appendChild(editIcon)
+
+                task.appendChild(name)
+                task.appendChild(taskDescription)
+                task.appendChild(taskCompleted)
+                task.appendChild(deleteButton)
+                task.appendChild(editButton)
+
+                document.getElementById('taskList').append(task)
+                document.getElementById('create-task')
             })
             .catch(err => {
                 alert('Something went wrong. Try again.')
@@ -189,10 +244,13 @@
             let isDone = document.getElementById('edit-is-done').checked
 
             let data = {
+                oldTaskName: oldTaskName,
                 taskName: taskName,
                 description: description,
                 isDone: isDone
             }
+
+            console.log(data)
 
             fetch('/task/edit', {
                 method: 'POST',
@@ -205,7 +263,23 @@
                     throw new Error(`HTTP error, status = ${res.status}`)
                 }
                 alert('Task edited successfully!')
-                window.location.reload() 
+
+                for (let taskHeading of document.querySelectorAll('.list-group .list-group-item > h4')) {
+                    if (taskHeading.textContent == oldTaskName) {
+                        const parent = taskHeading.parentNode
+
+                        taskHeading.textContent = taskName
+                        parent.querySelectorAll('p')[0].textContent = description
+                        const badge = parent.querySelectorAll('span')[0]
+                        if (isDone) {
+                            badge.textContent = 'Complete'
+                            badge.className = 'badge badge-success'
+                        } else {
+                            badge.textContent = 'Incomplete'
+                            badge.className = 'badge badge-danger'
+                        }
+                    }
+                }
             })
             .catch(err => {
                 alert('Something went wrong. Try again.')
@@ -230,7 +304,11 @@
                     throw new Error(`HTTP error, status = ${res.status}`)
                 }
                 alert('Task deleted successfully!')
-                window.location.reload() 
+                for (let taskHeading of document.querySelectorAll('.list-group .list-group-item > h4')) {
+                    if (taskHeading.textContent == deleteTaskName) {
+                        taskHeading.parentNode.parentNode.removeChild(taskHeading.parentNode)
+                    }
+                }
             })
             .catch(err => {
                 alert('Something went wrong. Try again.')

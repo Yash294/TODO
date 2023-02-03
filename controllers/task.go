@@ -8,7 +8,6 @@ import (
 )
 
 func RenderTasks(c *fiber.Ctx) error {
-
 	userId, err := util.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -31,7 +30,6 @@ func RenderTasks(c *fiber.Ctx) error {
 }
 
 func AddTask(c *fiber.Ctx) error {
-
 	userId, err := util.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -72,7 +70,7 @@ func EditTask(c *fiber.Ctx) error {
 		})
 	}
 
-	var data models.Task
+	var data repos.EditTaskInfo
 	data.Assignee = userId
 
 	if err = c.BodyParser(&data); err != nil {
