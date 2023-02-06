@@ -1,6 +1,7 @@
 package repos
 
 import (
+	"strings"
 	"errors"
 	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
@@ -17,7 +18,7 @@ type PasswordResetInfo struct {
 func Login(data *models.User) (models.User, error) {
 	// query db to check if email and passwords match
 	var query models.User
-	result := util.DB.Where("email = ?", data.Email).First(&query)
+	result := util.DB.Where("email = ?", strings.ToLower(data.Email)).First(&query)
 
 	// if error is not nil, check cause, otherwise return nil for success
 	if result.Error != nil {
@@ -46,6 +47,7 @@ func CreateUser(data *models.User) error {
 	}
 
 	data.Password = string(bytes)
+	data.Email = strings.ToLower(data.Email)
 
 	// create the user as expected
 	result := util.DB.Create(&data)
@@ -60,7 +62,7 @@ func CreateUser(data *models.User) error {
 func ChangePassword(data *PasswordResetInfo) error {
 	// query db to see if user credentials exist
 	var query models.User
-	result := util.DB.Where("email = ?", data.Email).First(&query)
+	result := util.DB.Where("email = ?", strings.ToLower(data.Email)).First(&query)
 
 	// is the error is not nil check cause
 	if result.Error != nil {
@@ -86,7 +88,7 @@ func ChangePassword(data *PasswordResetInfo) error {
 	data.NewPassword = string(bytes)
 
 	// otherwise now we can update the user's password
-	result = util.DB.Model(models.User{}).Where("email = ?", data.Email).Update("password", data.NewPassword)
+	result = util.DB.Model(models.User{}).Where("email = ?", strings.ToLower(data.Email)).Update("password", data.NewPassword)
 
 	// if update not successful, then throw an error, otherwise return nil
 	if result.Error != nil {
