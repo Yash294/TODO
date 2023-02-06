@@ -18,15 +18,15 @@ docker pull redis
 
 Run container for the first time:
 
-docker run -name %NAME% -e POSTGRES_PASSWORD=%PASSWORD% -p %PORT%:%PORT% -d postgres
+`docker run -name %NAME% -e POSTGRES_PASSWORD=%PASSWORD% -p %PORT%:%PORT% -d postgres`
 
 - Add your custom name, password, port (fill personal %variable%) and change app.env file accordingly (DB variables)
 
-docker run -it --name %NAME% -p %PORT%:%PORT% -d redis
+`docker run -it --name %NAME% -p %PORT%:%PORT% -d redis`
 
 To start existing container:
 
-docker start -a %NAME%
+`docker start -a %NAME%`
 
 If you would like the default configurations, simply use the app.env variables
 
@@ -34,5 +34,5 @@ If you would like the default configurations, simply use the app.env variables
 
 ### 3. Start application
 
-go run server.go
+`go run server.go`
 
