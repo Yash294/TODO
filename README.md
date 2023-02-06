@@ -13,8 +13,8 @@ Session middleware is also utilized using the Go Fiber session library and Redis
 
 ### 1. Install Docker using their website and install a Postgres image and a Redis image
 
-docker pull postgres
-docker pull redis
+`docker pull postgres`
+`docker pull redis`
 
 Run container for the first time:
 
