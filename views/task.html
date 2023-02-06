@@ -59,7 +59,7 @@
                             <label for="add-description">Description</label>
                             <textarea id="add-description" cols="30" rows="6" type="text" class="form-control" id="description" placeholder="Add a summary..." maxlength="256"></textarea>
                         </div>
-                        <button type="submit" id="add-btn" class="btn btn-primary">Add</button>
+                        <button type="submit" id="add-btn" class="btn btn-primary" data-toggle="modal" data-target="#create-task">Add</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </form>
                 </div>
@@ -112,7 +112,7 @@
                                 <label for="edit-is-done" class="form-check-label">Completed</label>
                             </div>
                         </div>
-                        <button type="submit" id="confirm-edit-btn" class="btn btn-primary">Confirm</button>
+                        <button type="submit" id="confirm-edit-btn" class="btn btn-primary" data-toggle="modal" data-target="#edit-task">Confirm</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </form>
                 </div>
@@ -132,7 +132,7 @@
                 <div class="modal-body">
                     <form id="delete-task-form" onsubmit="submitDeleteForm(event)">
                         <p>Are you sure you would like to delete this task?</p>
-                        <button type="submit" id="delete-btn" class="btn btn-primary">Confirm</button>
+                        <button type="submit" id="delete-btn" class="btn btn-primary" data-toggle="modal" data-target="#delete-task">Confirm</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </form>
                 </div>
@@ -229,7 +229,6 @@
                 task.appendChild(editButton)
 
                 document.getElementById('taskList').append(task)
-                document.getElementById('create-task')
             })
             .catch(err => {
                 alert('Something went wrong. Try again.')
