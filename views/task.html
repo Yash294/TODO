@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+    <link rel="icon" type="image/x-icon" href="#">
     <title>TODO App</title> 
 
     <meta charset="utf-8" />
@@ -249,8 +250,6 @@
                 isDone: isDone
             }
 
-            console.log(data)
-
             fetch('/task/edit', {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -327,21 +326,6 @@
                 alert('Something went wrong. Try again.')
             })
         }
-    
-        /* 
-            Some functionalities that come to mind right now (Jan. 17, 2023)
-                - Add, delete button
-                    - Add uses a modal to add task name and description
-                        - Can have empty description but not empty task name
-                    - Delete uses a modal to confirm delete (so confirm and cancel buttons, nothing else)
-                    - Confirm the changes to db
-                - Each task is different colour and has title, description.
-                    - Task name and Description is editable so each task should have edit button in top right
-                        - Clicking edit should call a modal (bootstrap) to edit and change
-                        - Send changes to db or add save button then send to db
-                - Have a logout
-                    - Logout also uses a modal to confirm logout
-        */
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

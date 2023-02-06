@@ -14,7 +14,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	path := c.Path()
 
-	if path == "/" || path == "/user/login" || path == "/user/signup" {
+	if path == "/" || path == "/user/login" || path == "/user/signup" || path == "/user/resetPassword" {
 		return c.Next()
 	}
 

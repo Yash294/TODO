@@ -5,6 +5,7 @@ import (
 	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
 	"gorm.io/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type PasswordResetInfo struct {
@@ -16,7 +17,7 @@ type PasswordResetInfo struct {
 func Login(data *models.User) (models.User, error) {
 	// query db to check if email and passwords match
 	var query models.User
-	result := util.DB.Model(models.User{}).Select("id").Where("email = ? AND password = ?", data.Email, data.Password).First(&query)
+	result := util.DB.Where("email = ?", data.Email).First(&query)
 
 	// if error is not nil, check cause, otherwise return nil for success
 	if result.Error != nil {
@@ -28,10 +29,24 @@ func Login(data *models.User) (models.User, error) {
 			return query, errors.New("failed to retrieve login info")
 		}
 	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(data.Password)); err != nil {
+		return query, errors.New("passwords do not match")
+	}
+
 	return query, nil
 }
 
 func CreateUser(data *models.User) error {
+
+	bytes, err := bcrypt.GenerateFromPassword([]byte(data.Password), 14)
+	
+	if err != nil {
+		return errors.New("failed to hash password")
+	}
+
+	data.Password = string(bytes)
+
 	// create the user as expected
 	result := util.DB.Create(&data)
 
@@ -45,7 +60,7 @@ func CreateUser(data *models.User) error {
 func ChangePassword(data *PasswordResetInfo) error {
 	// query db to see if user credentials exist
 	var query models.User
-	result := util.DB.Where("email = ? AND password = ?", data.Email, data.Password).First(&query)
+	result := util.DB.Where("email = ?", data.Email).First(&query)
 
 	// is the error is not nil check cause
 	if result.Error != nil {
@@ -57,6 +72,18 @@ func ChangePassword(data *PasswordResetInfo) error {
 			return errors.New("failed to retrieve login info")
 		}
 	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(data.Password)); err != nil {
+		return errors.New("passwords do not match")
+	}
+
+	bytes, err := bcrypt.GenerateFromPassword([]byte(data.NewPassword), 14)
+	
+	if err != nil {
+		return errors.New("failed to hash password")
+	}
+
+	data.NewPassword = string(bytes)
 
 	// otherwise now we can update the user's password
 	result = util.DB.Model(models.User{}).Where("email = ?", data.Email).Update("password", data.NewPassword)

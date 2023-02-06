@@ -1,7 +1,6 @@
 package repos
 
 import (
-	"fmt"
 	"errors"
 	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
@@ -41,8 +40,8 @@ func AddTask(data *models.Task) error {
 }
 
 func EditTask(data *EditTaskInfo) error {
-	fmt.Println(data.Assignee)
 	result := util.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", data.Assignee, data.OldTaskName).Updates(map[string]interface{}{"task_name": data.TaskName, "description": data.Description, "is_done": data.IsDone})
+	
 	if result.Error != nil {
 		return errors.New("failed to update task")
 	}
