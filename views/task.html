@@ -177,6 +177,8 @@
                     throw new Error(`HTTP error, status = ${res.status}`)
                 }
 
+                alert('Task added successfully!')
+
                 const task = document.createElement('li')
                 task.className = 'list-group-item list-group-item-dark'
                 task.id = taskName
