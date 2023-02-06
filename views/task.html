@@ -1,6 +1,7 @@
 <!DOCTYPE html>
+<html>
 <head>
-    <link rel="icon" type="image/x-icon" href="#">
+    <link rel="icon" type="image/x-icon" href="#" />
     <title>TODO App</title> 
 
     <meta charset="utf-8" />
@@ -54,7 +55,7 @@
                     <form id="add-task-form" onsubmit="submitAddForm(event)">
                         <div class="form-group">
                             <label for="add-task-name">Title</label>
-                            <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" required>
+                            <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" />
                         </div>
                         <div class="form-group">
                             <label for="add-description">Description</label>
@@ -101,7 +102,7 @@
                     <form id="edit-task-form" onsubmit="submitEditForm(event)">
                         <div class="form-group">
                             <label for="edit-task-name">Title</label>
-                            <input type="text" class="form-control" id="edit-task-name" maxlength="64" required />
+                            <input type="text" class="form-control" id="edit-task-name" maxlength="64" />
                         </div>
                         <div class="form-group">
                             <label for="edit-description">Description</label>
@@ -159,6 +160,11 @@
 
         function submitAddForm(event) {
             let taskName = document.getElementById('add-task-name').value
+            if (taskName === '') {
+                alert('Need a task name!')
+                return
+            }
+
             let description = document.getElementById('add-description').value
 
             let data = {
@@ -242,6 +248,11 @@
 
         function submitEditForm(event) {
             let taskName = document.getElementById('edit-task-name').value
+            if (taskName === '') {
+                alert('Need a task name!')
+                return
+            }
+
             let description = document.getElementById('edit-description').value
             let isDone = document.getElementById('edit-is-done').checked
 
@@ -333,4 +344,4 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </body>
-
+</html>
