@@ -24,6 +24,8 @@ Run container for the first time:
 
 `docker run -it --name %NAME% -p %PORT%:%PORT% -d redis`
 
+- Add your custom name and port (fill personal %variable%) and change app.env file accordingly (REDIS variables)
+
 To start existing container:
 
 `docker start -a %NAME%`
