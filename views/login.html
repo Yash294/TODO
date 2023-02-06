@@ -22,7 +22,7 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control mb-3" id="password" minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                <input type="password" class="form-control mb-3" id="password" minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required>
                 <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
             </div> 
             <div class="form-group">
@@ -49,11 +49,11 @@
                         </div>
                         <div class="form-group">
                             <label for="reset-password">Password</label>
-                            <input type="password" class="form-control" id="reset-password"  minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                            <input type="password" class="form-control" id="reset-password"  minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required>
                         </div>
                         <div class="form-group">
                             <label for="new-password">New Password</label>
-                            <input type="password" class="form-control" id="new-password"  minlength="8" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,64}$" required>
+                            <input type="password" class="form-control" id="new-password"  minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required>
                         </div>
                         <button type="submit" id="reset-btn" class="btn btn-primary">Reset</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
