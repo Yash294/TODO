@@ -4,34 +4,29 @@ import (
 	"errors"
 	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
+	"github.com/jinzhu/copier"
 )
 
-type TaskInfo struct {
-	TaskName string `json:"taskName"`
-	Description string `json:"description"`
-	IsDone bool `json:"isDone"`
-}
-
-type EditTaskInfo struct {
-	OldTaskName string `json:"oldTaskName"`
-	TaskName string `json:"taskName"`
-	Description string `json:"description"`
-	IsDone bool `json:"isDone"`
-	Assignee uint
-}
-
-func GetTasks(userId uint) ([]TaskInfo, error) {
-	var query []TaskInfo
+func GetTasks(userId uint) ([]models.TaskResponse, error) {
+	var query []models.TaskResponse
 	result := util.DB.Model(models.Task{}).Where("assignee = ?", userId).Find(&query)
 
 	if result.Error != nil {
-		return query, errors.New("failed to retrieve tasks")
+		return nil, errors.New("failed to retrieve tasks")
 	}
 	return query, nil
 }
 
-func AddTask(data *models.Task) error {
-	result := util.DB.Model(models.Task{}).Create(&data)
+func AddTask(dataDTO *models.TaskDTO, userId uint) error {
+	// convert DTO
+	var dataRepo models.Task
+	if err := copier.Copy(&dataRepo, &dataDTO); err != nil {
+		return errors.New("cannot map data")
+	}
+
+	dataRepo.Assignee = userId
+
+	result := util.DB.Model(models.Task{}).Create(&dataRepo)
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")
@@ -39,8 +34,8 @@ func AddTask(data *models.Task) error {
 	return nil
 }
 
-func EditTask(data *EditTaskInfo) error {
-	result := util.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", data.Assignee, data.OldTaskName).Updates(map[string]interface{}{"task_name": data.TaskName, "description": data.Description, "is_done": data.IsDone})
+func EditTask(dataDTO *models.TaskDTO, userId uint) error {
+	result := util.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", userId, dataDTO.OldTaskName).Updates(map[string]interface{}{"task_name": dataDTO.TaskName, "description": dataDTO.Description, "is_done": dataDTO.IsDone})
 	
 	if result.Error != nil {
 		return errors.New("failed to update task")
@@ -48,8 +43,8 @@ func EditTask(data *EditTaskInfo) error {
 	return nil
 }
 
-func DeleteTask(data *models.Task) error {
-	result := util.DB.Unscoped().Where("assignee = ? AND task_name = ?", data.Assignee, data.TaskName).Delete(&models.Task{})
+func DeleteTask(dataDTO *models.TaskDTO, userId uint) error {
+	result := util.DB.Unscoped().Where("assignee = ? AND task_name = ?", userId, dataDTO.TaskName).Delete(&models.Task{})
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")

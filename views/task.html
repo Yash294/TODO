@@ -322,8 +322,11 @@
                 }
             })
             .catch(err => {
+                console.log(err)
                 alert('Something went wrong. Try again.')
             })
+
+            event.preventDefault()
         }
 
         function submitLogout(event) {

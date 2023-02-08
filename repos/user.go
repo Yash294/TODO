@@ -7,6 +7,7 @@ import (
 	"github.com/Yash294/TODO/models"
 	"gorm.io/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/jinzhu/copier"
 )
 
 type PasswordResetInfo struct {
@@ -15,42 +16,47 @@ type PasswordResetInfo struct {
 	NewPassword string `json:"newPassword"`
 }
 
-func Login(data *models.User) (models.User, error) {
+func Login(dataDTO *models.UserDTO) (uint, error) {
 	// query db to check if email and passwords match
 	var query models.User
-	result := util.DB.Where("email = ?", strings.ToLower(data.Email)).First(&query)
+	result := util.DB.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
 
 	// if error is not nil, check cause, otherwise return nil for success
 	if result.Error != nil {
 		// if record not found, user input is incorrect, throw an error
 		// otherwise the error is unrelated to user so throw
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return query, errors.New("email/password is incorrect")
+			return 0, errors.New("email/password is incorrect")
 		} else {
-			return query, errors.New("failed to retrieve login info")
+			return 0, errors.New("failed to retrieve login info")
 		}
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(data.Password)); err != nil {
-		return query, errors.New("passwords do not match")
+	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(dataDTO.Password)); err != nil {
+		return 0, errors.New("passwords do not match")
 	}
 
-	return query, nil
+	return query.ID, nil
 }
 
-func CreateUser(data *models.User) error {
+func CreateUser(dataDTO *models.UserDTO) error {
+	// convert DTO
+	var dataRepo models.User
+	if err := copier.Copy(&dataRepo, &dataDTO); err != nil {
+		return errors.New("cannot map data")
+	}
 
-	bytes, err := bcrypt.GenerateFromPassword([]byte(data.Password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(dataRepo.Password), 14)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
 	}
 
-	data.Password = string(bytes)
-	data.Email = strings.ToLower(data.Email)
+	dataRepo.Password = string(bytes)
+	dataRepo.Email = strings.ToLower(dataRepo.Email)
 
 	// create the user as expected
-	result := util.DB.Create(&data)
+	result := util.DB.Create(&dataRepo)
 
 	// if unsuccessful, throw an error, otherwise return nil
 	if result.Error != nil {
@@ -59,10 +65,10 @@ func CreateUser(data *models.User) error {
 	return nil
 }
 
-func ChangePassword(data *PasswordResetInfo) error {
+func ChangePassword(dataDTO *models.UserDTO) error {
 	// query db to see if user credentials exist
 	var query models.User
-	result := util.DB.Where("email = ?", strings.ToLower(data.Email)).First(&query)
+	result := util.DB.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
 
 	// is the error is not nil check cause
 	if result.Error != nil {
@@ -75,20 +81,18 @@ func ChangePassword(data *PasswordResetInfo) error {
 		}
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(data.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(dataDTO.Password)); err != nil {
 		return errors.New("passwords do not match")
 	}
 
-	bytes, err := bcrypt.GenerateFromPassword([]byte(data.NewPassword), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(dataDTO.NewPassword), 14)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
 	}
 
-	data.NewPassword = string(bytes)
-
 	// otherwise now we can update the user's password
-	result = util.DB.Model(models.User{}).Where("email = ?", strings.ToLower(data.Email)).Update("password", data.NewPassword)
+	result = util.DB.Model(models.User{}).Where("email = ?", strings.ToLower(dataDTO.Email)).Update("password", string(bytes))
 
 	// if update not successful, then throw an error, otherwise return nil
 	if result.Error != nil {

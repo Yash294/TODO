@@ -38,8 +38,7 @@ func AddTask(c *fiber.Ctx) error {
 		})
 	}
 
-	var data models.Task
-	data.Assignee = userId
+	var data models.TaskDTO
 
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -48,7 +47,7 @@ func AddTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.AddTask(&data); err != nil {
+	if err = repos.AddTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,
@@ -70,8 +69,7 @@ func EditTask(c *fiber.Ctx) error {
 		})
 	}
 
-	var data repos.EditTaskInfo
-	data.Assignee = userId
+	var data models.TaskDTO
 
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -80,7 +78,7 @@ func EditTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.EditTask(&data); err != nil {
+	if err = repos.EditTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,
@@ -102,8 +100,7 @@ func DeleteTask(c *fiber.Ctx) error {
 		})
 	}
 
-	var data models.Task
-	data.Assignee = userId
+	var data models.TaskDTO
 
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -112,7 +109,7 @@ func DeleteTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.DeleteTask(&data); err != nil {
+	if err = repos.DeleteTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error,

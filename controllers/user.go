@@ -16,7 +16,7 @@ func RenderSignup(c *fiber.Ctx) error {
 }
 
 func Login(c *fiber.Ctx) error {
-	var data models.User
+	var data models.UserDTO
 
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -43,7 +43,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	sess.Set(util.AUTH_KEY, true)
-	sess.Set(util.USER_ID, result.ID)
+	sess.Set(util.USER_ID, result)
 
 	if err := sess.Save(); err != nil {
 		panic(err)
@@ -56,7 +56,7 @@ func Login(c *fiber.Ctx) error {
 }
 
 func Signup(c *fiber.Ctx) error {
-	var data models.User
+	var data models.UserDTO
 
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -79,7 +79,7 @@ func Signup(c *fiber.Ctx) error {
 }
 
 func ResetPassword(c *fiber.Ctx) error {
-	var data repos.PasswordResetInfo
+	var data models.UserDTO
 
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
