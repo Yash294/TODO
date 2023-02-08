@@ -100,3 +100,16 @@ func ChangePassword(dataDTO *models.UserDTO) error {
 	}
 	return nil
 }
+
+func GetUser(userId uint) (models.UserResponse, error) {
+	var query models.UserResponse
+	result := util.DB.Model(models.User{}).Select("email").Where("id = ?", userId).First(&query)
+
+	if result.Error != nil {
+		return models.UserResponse{}, errors.New("failed to retrieve email")
+	}
+
+	query.Email = strings.Split(query.Email, "@")[0]
+	
+	return query, nil
+}

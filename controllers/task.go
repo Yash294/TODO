@@ -24,7 +24,16 @@ func RenderTasks(c *fiber.Ctx) error {
 		})
 	}
 
+	email, err := repos.GetUser(userId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error,
+		})
+	}
+
 	return c.Render("task", fiber.Map{
+		"username": email,
 		"data": result,
 	})
 }
