@@ -6,7 +6,7 @@ import (
 	"github.com/Yash294/TODO/util"
 	"github.com/Yash294/TODO/models"
 	"gorm.io/gorm"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/alexedwards/argon2id"
 	"github.com/jinzhu/copier"
 )
 
@@ -32,7 +32,7 @@ func Login(dataDTO *models.UserDTO) (uint, error) {
 		}
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(dataDTO.Password)); err != nil {
+	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
 		return 0, errors.New("passwords do not match")
 	}
 
@@ -46,13 +46,13 @@ func CreateUser(dataDTO *models.UserDTO) error {
 		return errors.New("cannot map data")
 	}
 
-	bytes, err := bcrypt.GenerateFromPassword([]byte(dataRepo.Password), 14)
+	hash, err := argon2id.CreateHash(dataRepo.Password, argon2id.DefaultParams)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
 	}
 
-	dataRepo.Password = string(bytes)
+	dataRepo.Password = hash
 	dataRepo.Email = strings.ToLower(dataRepo.Email)
 
 	// create the user as expected
@@ -81,18 +81,18 @@ func ChangePassword(dataDTO *models.UserDTO) error {
 		}
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(query.Password), []byte(dataDTO.Password)); err != nil {
+	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
 		return errors.New("passwords do not match")
 	}
 
-	bytes, err := bcrypt.GenerateFromPassword([]byte(dataDTO.NewPassword), 14)
+	hash, err := argon2id.CreateHash(dataDTO.NewPassword, argon2id.DefaultParams)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
 	}
 
 	// otherwise now we can update the user's password
-	result = util.DB.Model(models.User{}).Where("email = ?", strings.ToLower(dataDTO.Email)).Update("password", string(bytes))
+	result = util.DB.Model(models.User{}).Where("email = ?", strings.ToLower(dataDTO.Email)).Update("password", hash)
 
 	// if update not successful, then throw an error, otherwise return nil
 	if result.Error != nil {

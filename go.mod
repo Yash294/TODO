@@ -4,6 +4,8 @@ go 1.19
 
 require github.com/gofiber/fiber/v2 v2.42.0
 
+require github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387 // indirect
+
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
