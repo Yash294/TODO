@@ -2,14 +2,15 @@ package routes
 
 import (
 	"github.com/Yash294/TODO/controllers"
+	"github.com/Yash294/TODO/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 func UserRoutes(route fiber.Router) {
-	route.Get("/login", controllers.RenderLogin)
-	route.Get("/signup", controllers.RenderSignup)
-	route.Get("/logout", controllers.Logout)
-	route.Post("/login", controllers.Login)
-	route.Post("/signup", controllers.Signup)
-	route.Post("/resetPassword", controllers.ResetPassword)
+	route.Get("/login", util.RequireSession, controllers.RenderLogin)
+	route.Get("/signup", util.RequireSession, controllers.RenderSignup)
+	route.Get("/logout", util.RequireSession, controllers.Logout)
+	route.Post("/login", util.RequireSession, controllers.Login)
+	route.Post("/signup", util.RequireSession, controllers.Signup)
+	route.Post("/resetPassword", util.RequireSession, controllers.ResetPassword)
 }

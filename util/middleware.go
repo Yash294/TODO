@@ -5,11 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewMiddleware() fiber.Handler {
-	return AuthMiddleware
-}
-
-func AuthMiddleware(c *fiber.Ctx) error {
+func RequireSession(c *fiber.Ctx) error {
 	sess, err := Store.Get(c)
 
 	path := c.Path()
