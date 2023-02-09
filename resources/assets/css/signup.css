@@ -1,0 +1,3 @@
+.form-control, .form-control.is-valid, .was-validated .form-control:valid {
+    border-color: #ced4da;
+}
