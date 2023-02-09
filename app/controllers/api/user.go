@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/Yash294/TODO/models"
-	"github.com/Yash294/TODO/repos"
+	"github.com/Yash294/TODO/app/models"
+	"github.com/Yash294/TODO/app/repos"
 	"github.com/Yash294/TODO/util"
 	"github.com/gofiber/fiber/v2"
 )

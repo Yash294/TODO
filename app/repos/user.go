@@ -4,7 +4,7 @@ import (
 	"strings"
 	"errors"
 	"github.com/Yash294/TODO/util"
-	"github.com/Yash294/TODO/models"
+	"github.com/Yash294/TODO/app/models"
 	"gorm.io/gorm"
 	"github.com/alexedwards/argon2id"
 	"github.com/jinzhu/copier"

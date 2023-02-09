@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/Yash294/TODO/controllers"
+	"github.com/Yash294/TODO/app/controllers/api"
 	"github.com/Yash294/TODO/util"
 	"github.com/gofiber/fiber/v2"
 )

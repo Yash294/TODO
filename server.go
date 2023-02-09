@@ -21,11 +21,13 @@ func setupRoutes(app *fiber.App) {
 
 func main() {
 
-	engine := html.New("./views", ".html")
+	engine := html.New("./resources/views", ".html")
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
+	app.Static("/", "./resources")
 
 	setupRoutes(app)
 

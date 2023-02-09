@@ -2,7 +2,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/Yash294/TODO/models"
+	"github.com/Yash294/TODO/app/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

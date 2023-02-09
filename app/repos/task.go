@@ -3,7 +3,7 @@ package repos
 import (
 	"errors"
 	"github.com/Yash294/TODO/util"
-	"github.com/Yash294/TODO/models"
+	"github.com/Yash294/TODO/app/models"
 	"github.com/jinzhu/copier"
 )
 
