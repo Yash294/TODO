@@ -16,20 +16,27 @@
         <h1 class="pb-2 text-muted">TODO...</h1>
         <h3>Login</h3>
         <p>Welcome to the TODO task management application. Please login below.</p>
-        <form id="login-form" onsubmit="submitLoginForm(event)">
+        <form id="login-form" class="needs-validation" onsubmit="submitLoginForm(event, this)" novalidate>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required />
+                <input type="email" class="form-control" id="email" placeholder="user123@domain.com" maxlength="64" required />
+                <div class="invalid-feedback">
+                    Please enter a valid email.
+                </div>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control mb-3" id="password" minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required />
-                <p>Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p>
+                <input type="password" class="form-control" id="password" required />
+                <div class="invalid-feedback">
+                    Please enter a password.
+                </div>
+                <p class="mt-2">Forgot your password? <a href="#" data-toggle="modal" data-target="#forgotPassword">Reset it here.</a></p> 
             </div> 
             <div class="form-group">
                 <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
-                <p>New to TODO? <a href="./signup">Signup here.</a></p>
+                <p class="mt-2">New to TODO? <a href="./signup">Signup here.</a></p>
             </div>
+            <div id="server-side-validation"></div>
         </form>
         
 
@@ -43,20 +50,32 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form id="reset-form" onsubmit="submitResetPasswordForm(event)">
+                    <form id="reset-form" class="needs-validation" onsubmit="submitResetPasswordForm(event, this)" novalidate>
                         <div class="form-group">
                             <label for="reset-email">Email</label>
                             <input type="text" class="form-control" id="reset-email" placeholder="user123@domain.com" maxlength="64" required />
+                            <div class="invalid-feedback">
+                                Please enter a valid email.
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="reset-password">Password</label>
-                            <input type="password" class="form-control" id="reset-password"  minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required />
+                            <label for="reset-password">Current Password</label>
+                            <input type="password" class="form-control" id="reset-password" required />
+                            <div class="invalid-feedback">
+                                Please enter your password.
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="new-password">New Password</label>
                             <input type="password" class="form-control" id="new-password"  minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required />
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a password between 16-64 characters, with at least one 1 lowercase, uppercase, symbol and number character.
+                            </div>
                         </div>
-                        <button type="submit" id="reset-btn" class="btn btn-primary">Reset</button>
+                        <button type="submit" id="reset-btn" class="btn btn-primary" data-toggle="modal" data-target="#forgotPassword">Reset</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </form>
                 </div>

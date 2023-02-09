@@ -12,7 +12,7 @@ func RenderTasks(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -20,7 +20,7 @@ func RenderTasks(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -28,13 +28,13 @@ func RenderTasks(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
 	return c.Render("task", fiber.Map{
 		"username": email,
-		"data": result,
+		"data":     result,
 	})
 }
 
@@ -43,7 +43,7 @@ func AddTask(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -52,14 +52,14 @@ func AddTask(c *fiber.Ctx) error {
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
 	if err = repos.AddTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -74,7 +74,7 @@ func EditTask(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -83,14 +83,14 @@ func EditTask(c *fiber.Ctx) error {
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
 	if err = repos.EditTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -105,7 +105,7 @@ func DeleteTask(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
@@ -114,14 +114,14 @@ func DeleteTask(c *fiber.Ctx) error {
 	if err = c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 
 	if err = repos.DeleteTask(&data, userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
-			"message": err.Error,
+			"message": err.Error(),
 		})
 	}
 

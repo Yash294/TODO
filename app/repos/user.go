@@ -26,14 +26,14 @@ func Login(dataDTO *models.UserDTO) (uint, error) {
 		// if record not found, user input is incorrect, throw an error
 		// otherwise the error is unrelated to user so throw
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return 0, errors.New("email/password is incorrect")
+			return 0, errors.New("email does not exist")
 		} else {
 			return 0, errors.New("failed to retrieve login info")
 		}
 	}
 
 	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
-		return 0, errors.New("passwords do not match")
+		return 0, errors.New("password is incorrect")
 	}
 
 	return query.ID, nil
@@ -75,14 +75,14 @@ func ChangePassword(dataDTO *models.UserDTO) error {
 		// if no record found, that means user input is incorrect
 		// so throw an error. If other error, throw it
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return errors.New("email/password is incorrect")
+			return errors.New("email is incorrect")
 		} else {
 			return errors.New("failed to retrieve login info")
 		}
 	}
 
 	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
-		return errors.New("passwords do not match")
+		return errors.New("old password is incorrect")
 	}
 
 	hash, err := argon2id.CreateHash(dataDTO.NewPassword, argon2id.DefaultParams)

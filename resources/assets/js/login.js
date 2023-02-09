@@ -1,4 +1,26 @@
-function submitLoginForm(event) {
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      let forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+})();
+
+function submitLoginForm(event, form) {
+    if (!form.checkValidity()) {
+        return
+    }
     let email = document.getElementById('email').value
     let password = document.getElementById('password').value
 
@@ -13,21 +35,30 @@ function submitLoginForm(event) {
         headers: {
             'Content-type': 'application/json'
         },
-    }).then(res => {
-        if (!res.ok) {
-            throw new Error(`HTTP error, status = ${res.status}`)
-        }
-        alert('You have logged in successfully!')
-        window.location.href = '/task/dashboard'
     })
-    .catch(err => {
-        alert('Something went wrong. Try again.')
+    .then(res => res.json())
+    .then(result => {
+        const alert = document.getElementById('server-side-validation')
+        result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
+        alert.textContent = result.message
+
+        if (!result.success) {
+            alert.className = 'alert alert-danger'
+        } else {
+            alert.className = 'alert alert-success'
+            setTimeout(() => {
+                window.location.href = '/task/dashboard'
+            }, 2000)
+        }
     })
 
     event.preventDefault()
 }
 
-function submitResetPasswordForm(event) {
+function submitResetPasswordForm(event, form) {
+    if (!form.checkValidity()) {
+        return
+    }
     let resetEmail = document.getElementById('reset-email').value
     let resetPassword = document.getElementById('reset-password').value
     let newPassword = document.getElementById('new-password').value
@@ -44,15 +75,21 @@ function submitResetPasswordForm(event) {
         headers: {
             'Content-type': 'application/json'
         },
-    }).then(res => {
-        if (!res.ok) {
-            throw new Error(`HTTP error, status = ${res.status}`)
-        }
-        alert('Your password has been reset successfully!')
-        window.location.href = '/user/login'
     })
-    .catch(err => {
-        alert('Something went wrong. Try again.')
+    .then(res => res.json())
+    .then(result => {
+        const alert = document.getElementById('server-side-validation')
+        result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
+        alert.textContent = result.message
+
+        if (!result.success) {
+            alert.className = 'alert alert-danger'
+        } else {
+            alert.className = 'alert alert-success'
+            setTimeout(() => {
+                alert.className = ""
+            }, 5000)
+        }
     })
 
     event.preventDefault()

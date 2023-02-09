@@ -17,23 +17,34 @@
         <h3>Signup</h3>
         <h4>Welcome to the TODO task management application. Please signup below.</h4>
         <p>Passwords should be 16-64 characters with at least: 1 uppercase, 1 lowercase, 1 number, 1 symbol</p>
-        <form id="signup-form" onsubmit="submitSignupForm(event)">
+        <form id="signup-form" class="needs-validation" onsubmit="submitSignupForm(event, this)" novalidate>
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control mb-3" id="email" placeholder="user123@domain.com" maxlength="64" required />
+                <div class="invalid-feedback">
+                    Please enter a valid email.
+                </div>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control mb-3" id="password" minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required />
+                <div class="invalid-feedback">
+                    Please enter a password that satisfies the requirements above.
+                </div>
             </div> 
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password</label>
                 <input type="password" class="form-control mb-3" id="confirm-password" minlength="16" maxlength="64" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{16,64}$" required />
+                <div class="invalid-feedback">
+                    Please enter a password that satisfies the requirements above.
+                </div>
             </div>
-            <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Submit</button>
-        </form>
-
-        <p>Have an account? <a href="./login">Login here.</a></p>
+            <div class="form-group">
+                <button id="submit-btn" type="submit" class="btn btn-primary mb-2">Submit</button>
+                <p>Have an account? <a href="./login">Login here.</a></p>
+            </div>
+            <div id="server-side-validation"></div>
+        </form> 
     </div>
 
     <script type="text/javascript" src="../assets/js/signup.js"></script>
