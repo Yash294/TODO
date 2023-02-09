@@ -1,4 +1,10 @@
 
-.form-control, .form-control.is-valid, .was-validated .form-control:valid {
-    border-color: #ced4da;
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color: #ced4da !important;
+    box-shadow: none !important;
+    background-image: none !important; 
+}
+
+::-ms-reveal {
+    display: none;
 }
