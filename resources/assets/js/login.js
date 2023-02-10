@@ -38,14 +38,14 @@ function submitLoginForm(event, form) {
     })
     .then(res => res.json())
     .then(result => {
-        const alert = document.getElementById('server-side-validation')
+        const confirmation = document.getElementById('server-side-validation')
         result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
-        alert.textContent = result.message
+        confirmation.textContent = result.message
 
         if (!result.success) {
-            alert.className = 'alert alert-danger'
+            confirmation.className = 'alert alert-danger'
         } else {
-            alert.className = 'alert alert-success'
+            confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 window.location.href = '/task/dashboard'
             }, 2000)
@@ -78,16 +78,16 @@ function submitResetPasswordForm(event, form) {
     })
     .then(res => res.json())
     .then(result => {
-        const alert = document.getElementById('server-side-validation')
+        const confirmation = document.getElementById('server-side-validation')
         result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
-        alert.textContent = result.message
+        confirmation.textContent = result.message
 
         if (!result.success) {
-            alert.className = 'alert alert-danger'
+            confirmation.className = 'alert alert-danger'
         } else {
-            alert.className = 'alert alert-success'
+            confirmation.className = 'alert alert-success'
             setTimeout(() => {
-                alert.className = ""
+                confirmation.className = ""
             }, 5000)
         }
     })

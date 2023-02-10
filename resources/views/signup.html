@@ -13,9 +13,8 @@
 
 <body>
     <div class="container">
-        <h1 class="pb-2 text-muted">TODO...</h1>
+        <h1 class="pb-5 text-muted">TODO...</h1>
         <h3>Signup</h3>
-        <h4>Welcome to the TODO task management application. Please signup below.</h4>
         <p>Passwords should be 16-64 characters with at least: 1 uppercase, 1 lowercase, 1 number, 1 symbol</p>
         <form id="signup-form" class="needs-validation" onsubmit="submitSignupForm(event, this)" novalidate>
             <div class="form-group">
@@ -43,7 +42,7 @@
                 <button id="submit-btn" type="submit" class="btn btn-primary mb-2">Submit</button>
                 <p>Have an account? <a href="./login">Login here.</a></p>
             </div>
-            <div id="server-side-validation"></div>
+            <div id="server-side-validation" role="alert"></div>
         </form> 
     </div>
 

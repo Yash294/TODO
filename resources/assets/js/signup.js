@@ -26,7 +26,7 @@ function submitSignupForm(event, form) {
     let email = document.getElementById('email').value
     let password = document.getElementById('password').value
     let confirmPassword = document.getElementById('confirm-password').value
-    const alert = document.getElementById('server-side-validation')
+    const confirmation = document.getElementById('server-side-validation')
 
     let data = {
         email: email,
@@ -34,8 +34,8 @@ function submitSignupForm(event, form) {
     }
 
     if (password !== confirmPassword) {
-        alert.className = 'alert alert-danger'
-        alert.textContent = 'Passwords do not match.'
+        confirmation.className = 'alert alert-danger'
+        confirmation.textContent = 'Passwords do not match.'
     }   
 
     fetch('/user/signup', {
@@ -49,12 +49,12 @@ function submitSignupForm(event, form) {
     .then(result => {
         
         result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
-        alert.textContent = result.message
+        confirmation.textContent = result.message
 
         if (!result.success) {
-            alert.className = 'alert alert-danger'
+            confirmation.className = 'alert alert-danger'
         } else {
-            alert.className = 'alert alert-success'
+            confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 window.location.href = '/user/login'
             }, 2000)

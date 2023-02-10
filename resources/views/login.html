@@ -13,7 +13,7 @@
 
 <body>
     <div class="container">
-        <h1 class="pb-2 text-muted">TODO...</h1>
+        <h1 class="pb-5 text-muted">TODO...</h1>
         <h3>Login</h3>
         <p>Welcome to the TODO task management application. Please login below.</p>
         <form id="login-form" class="needs-validation" onsubmit="submitLoginForm(event, this)" novalidate>
@@ -34,9 +34,9 @@
             </div> 
             <div class="form-group">
                 <button id="submit-btn" type="submit" class="btn btn-primary pb-2">Login</button>
-                <p class="mt-2">New to TODO? <a href="./signup">Signup here.</a></p>
+                <p class="mt-2">Don't have an account? <a href="./signup">Signup here.</a></p>
             </div>
-            <div id="server-side-validation"></div>
+            <div id="server-side-validation" role="alert"></div>
         </form>
         
 

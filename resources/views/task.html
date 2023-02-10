@@ -23,6 +23,7 @@
                 <button type="submit" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#create-task">Create Task</button>
             </div>
         </div>
+        <div id="server-side-validation" role="alert"></div>
         <div id="taskContainer" class="container">
             <ul id="taskList" class="list-group">
                 {{ range .data }}
@@ -56,7 +57,10 @@
                     <form id="add-task-form" onsubmit="submitAddForm(event)">
                         <div class="form-group">
                             <label for="add-task-name">Title</label>
-                            <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" />
+                            <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" required/>
+                        </div>
+                        <div class="invalid-feedback">
+                          Please enter a task name.
                         </div>
                         <div class="form-group">
                             <label for="add-description">Description</label>
@@ -103,7 +107,7 @@
                     <form id="edit-task-form" onsubmit="submitEditForm(event)">
                         <div class="form-group">
                             <label for="edit-task-name">Title</label>
-                            <input type="text" class="form-control" id="edit-task-name" maxlength="64" />
+                            <input type="text" class="form-control" id="edit-task-name" maxlength="64" required/>
                         </div>
                         <div class="form-group">
                             <label for="edit-description">Description</label>
