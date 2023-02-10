@@ -54,17 +54,17 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form id="add-task-form" onsubmit="submitAddForm(event)">
+                    <form id="add-task-form" class="needs-validation" onsubmit="submitAddForm(event, this)" novalidate>
                         <div class="form-group">
-                            <label for="add-task-name">Title</label>
-                            <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" required/>
-                        </div>
-                        <div class="invalid-feedback">
-                          Please enter a task name.
+                          <label for="add-task-name">Title</label>
+                          <input type="text" class="form-control" id="add-task-name" placeholder="Task Name" maxlength="64" required/>
+                          <div class="invalid-feedback">
+                            Please enter a task name.
+                          </div>
                         </div>
                         <div class="form-group">
-                            <label for="add-description">Description</label>
-                            <textarea id="add-description" cols="30" rows="6" type="text" class="form-control" id="description" placeholder="Add a summary..." maxlength="256"></textarea>
+                          <label for="add-description">Description</label>
+                          <textarea id="add-description" cols="30" rows="6" type="text" class="form-control" id="description" placeholder="Add a summary..." maxlength="256"></textarea>
                         </div>
                         <button type="submit" id="add-btn" class="btn btn-primary" data-toggle="modal" data-target="#create-task">Add</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -84,7 +84,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form id="logout-form" onsubmit="submitLogout(event)">
+                    <form id="logout-form" onsubmit="submitLogout()">
                         <p>Are you sure you want to logout?</p>
                         <button type="submit" id="logout-btn" class="btn btn-primary">Logout</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -104,10 +104,13 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form id="edit-task-form" onsubmit="submitEditForm(event)">
+                    <form id="edit-task-form" class="needs-validation" onsubmit="submitEditForm(event, this)" novalidate>
                         <div class="form-group">
                             <label for="edit-task-name">Title</label>
                             <input type="text" class="form-control" id="edit-task-name" maxlength="64" required/>
+                            <div class="invalid-feedback">
+                              Please enter a task name.
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="edit-description">Description</label>
@@ -116,7 +119,7 @@
                         <div class="form-group">
                             <div class="form-check">
                                 <input id="edit-is-done" class="form-check-input" type="checkbox" />
-                                <label for="edit-is-done" class="form-check-label">Completed</label>
+                                <label for="edit-is-done" class="form-check-label text-dark">Completed</label>
                             </div>
                         </div>
                         <button type="submit" id="confirm-edit-btn" class="btn btn-primary" data-toggle="modal" data-target="#edit-task">Confirm</button>
@@ -148,6 +151,7 @@
         </div>
     </div>
 
+    <link rel="stylesheet" href="../assets/css/task.css">
     <script type="text/javascript" src="../assets/js/task.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

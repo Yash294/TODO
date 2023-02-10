@@ -1,3 +1,22 @@
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      let forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+})();
+
 let oldTaskName, deleteTaskName
 
 function setEditValues(taskName, description, isDone) {
@@ -12,7 +31,15 @@ function setDeleteValue(taskName) {
     deleteTaskName = taskName
 }
 
-function submitAddForm(event) {
+function submitAddForm(event, form) {
+    event.preventDefault()
+
+    if (!form.checkValidity()) {
+        const confirmation = document.getElementById('server-side-validation')
+        confirmation.className = 'alert alert-danger'
+        confirmation.textContent = 'Please specify a task name!'
+        return
+    }
     let taskName = document.getElementById('add-task-name').value
     let description = document.getElementById('add-description').value
 
@@ -98,11 +125,18 @@ function submitAddForm(event) {
             document.getElementById('taskList').append(task)
         } 
     })
-
-    event.preventDefault()
 }
 
-function submitEditForm(event) {
+function submitEditForm(event, form) {
+    event.preventDefault()
+    
+    if (!form.checkValidity()) {
+        const confirmation = document.getElementById('server-side-validation')
+        confirmation.className = 'alert alert-danger'
+        confirmation.textContent = 'Please specify a task name!'
+        return
+    }
+
     let taskName = document.getElementById('edit-task-name').value
     let description = document.getElementById('edit-description').value
     let isDone = document.getElementById('edit-is-done').checked
@@ -154,11 +188,11 @@ function submitEditForm(event) {
             }
         }
     })
-
-    event.preventDefault()
 }
 
 function submitDeleteForm(event) {
+    event.preventDefault()
+
     let data = {
         taskName: deleteTaskName,
     }
@@ -192,11 +226,9 @@ function submitDeleteForm(event) {
             }
         }
     })
-
-    event.preventDefault()
 }
 
-function submitLogout(event) {
+function submitLogout() {
     fetch('/user/logout')
     .then(res => res.json())
     .then(result => {
