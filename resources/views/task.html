@@ -23,9 +23,9 @@
                 <button type="submit" class="btn btn-secondary float-right mr-2" data-toggle="modal" data-target="#create-task">Create Task</button>
             </div>
         </div>
-        <div id="server-side-validation" role="alert"></div>
         <div id="taskContainer" class="container">
-            <ul id="taskList" class="list-group">
+            <div id="server-side-validation" role="alert"></div>
+            <ul id="taskList" class="list-group pt-1 pb-1">
                 {{ range .data }}
                     <li class="list-group-item list-group-item-dark">
                         <h4>{{ .TaskName }}</h4>

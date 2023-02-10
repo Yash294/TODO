@@ -40,6 +40,7 @@ function submitAddForm(event) {
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''
+                confirmation.textContent = ''
             }, 5000)
 
             const task = document.createElement('li')
@@ -132,6 +133,7 @@ function submitEditForm(event) {
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''
+                confirmation.textContent = ''
             }, 5000)
 
             for (let taskHeading of document.querySelectorAll('.list-group .list-group-item > h4')) {
@@ -180,6 +182,7 @@ function submitDeleteForm(event) {
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''
+                confirmation.textContent = ''
             }, 5000)
 
             for (let taskHeading of document.querySelectorAll('.list-group .list-group-item > h4')) {
@@ -197,17 +200,12 @@ function submitLogout(event) {
     fetch('/user/logout')
     .then(res => res.json())
     .then(result => {
-        const confirmation = document.getElementById('server-side-validation')
-        result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
-        confirmation.textContent = result.message
-
         if (!result.success) {
+            const confirmation = document.getElementById('server-side-validation')
+            result.message = result.message.charAt(0).toUpperCase() + result.message.slice(1) + '.'
+            confirmation.textContent = result.message
             confirmation.className = 'alert alert-danger'    
         } else {
-            confirmation.className = 'alert alert-success'
-            setTimeout(() => {
-                confirmation.className = ''
-            }, 2000)
             window.location.href = '/user/login' 
         }
     })

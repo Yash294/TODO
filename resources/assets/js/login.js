@@ -87,7 +87,8 @@ function submitResetPasswordForm(event, form) {
         } else {
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
-                confirmation.className = ""
+                confirmation.className = ''
+                confirmation.textContent = ''
             }, 5000)
         }
     })

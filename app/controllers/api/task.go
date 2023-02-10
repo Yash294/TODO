@@ -65,7 +65,7 @@ func AddTask(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"message": "Task created successfully.",
+		"message": "task created successfully",
 	})
 }
 
@@ -96,7 +96,7 @@ func EditTask(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"message": "Task edited successfully.",
+		"message": "task edited successfully",
 	})
 }
 
@@ -127,6 +127,6 @@ func DeleteTask(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"message": "Task deleted successfully.",
+		"message": "task deleted successfully",
 	})
 }
