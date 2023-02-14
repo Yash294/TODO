@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"github.com/Yash294/TODO/app/redis"
+	"github.com/Yash294/TODO/redis"
 )
 
 func RequireSession(c *fiber.Ctx) error {

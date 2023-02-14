@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/Yash294/TODO/routes"
-	"github.com/Yash294/TODO/app/database"
-	"github.com/Yash294/TODO/app/redis"
+	"github.com/Yash294/TODO/database"
+	"github.com/Yash294/TODO/redis"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html"
 )
