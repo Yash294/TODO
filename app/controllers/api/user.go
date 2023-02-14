@@ -25,7 +25,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	result, err := repos.Login(&data)
+	result, err := repos.Login(&data, util.DB, repos.EncryptionInstance)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -65,7 +65,7 @@ func Signup(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := repos.CreateUser(&data); err != nil {
+	if err := repos.CreateUser(&data, util.DB, repos.EncryptionInstance, repos.CopierInstance); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),

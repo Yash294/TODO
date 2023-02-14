@@ -1,25 +1,48 @@
 package repos
 
 import (
-	"strings"
 	"errors"
-	"github.com/Yash294/TODO/util"
+	"strings"
 	"github.com/Yash294/TODO/app/models"
-	"gorm.io/gorm"
+	"github.com/Yash294/TODO/util"
 	"github.com/alexedwards/argon2id"
 	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
 )
 
-type PasswordResetInfo struct {
-	Email    string `json:"email"`
-	Password    string `json:"password"`
-	NewPassword string `json:"newPassword"`
+type EncryptionStruct struct {}
+
+type Encryption interface {
+	createHash(password string) (string, error)
+	comparePasswordAndHash(password string, hash string) (bool, error)
 }
 
-func Login(dataDTO *models.UserDTO) (uint, error) {
+var EncryptionInstance Encryption = new(EncryptionStruct)
+
+func (encrypt *EncryptionStruct) createHash(password string) (string, error) {
+	return argon2id.CreateHash(password, argon2id.DefaultParams)
+}
+
+func (encrypt *EncryptionStruct) comparePasswordAndHash(password string, hash string) (bool, error) {
+	return argon2id.ComparePasswordAndHash(password, hash)
+}
+
+type CopierStruct struct {}
+
+type Copier interface {
+	copy(toValue interface{}, fromValue interface {}) error
+}
+
+var CopierInstance Copier = new(CopierStruct)
+
+func (cop *CopierStruct) copy(toValue interface{}, fromValue interface {}) error {
+	return copier.Copy(toValue, fromValue)
+}
+
+func Login(dataDTO *models.UserDTO, db *gorm.DB, encryption Encryption) (uint, error) {
 	// query db to check if email and passwords match
 	var query models.User
-	result := util.DB.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
+	result := db.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
 
 	// if error is not nil, check cause, otherwise return nil for success
 	if result.Error != nil {
@@ -32,21 +55,25 @@ func Login(dataDTO *models.UserDTO) (uint, error) {
 		}
 	}
 
-	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
+	if match, err := encryption.comparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
 		return 0, errors.New("password is incorrect")
 	}
 
 	return query.ID, nil
 }
 
-func CreateUser(dataDTO *models.UserDTO) error {
+func CreateUser(dataDTO *models.UserDTO, db *gorm.DB, encryption Encryption, copy Copier) error {
 	// convert DTO
-	var dataRepo models.User
-	if err := copier.Copy(&dataRepo, &dataDTO); err != nil {
+	var dataRepo = &models.User{
+		Email: "hello@gmail.com",
+		Password: "password",
+	}
+	
+	if err := copy.copy(dataRepo, dataDTO); err != nil {
 		return errors.New("cannot map data")
 	}
 
-	hash, err := argon2id.CreateHash(dataRepo.Password, argon2id.DefaultParams)
+	hash, err := encryption.createHash(dataDTO.Password)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
@@ -56,7 +83,7 @@ func CreateUser(dataDTO *models.UserDTO) error {
 	dataRepo.Email = strings.ToLower(dataRepo.Email)
 
 	// create the user as expected
-	result := util.DB.Create(&dataRepo)
+	result := db.Create(&dataRepo)
 
 	// if unsuccessful, throw an error, otherwise return nil
 	if result.Error != nil {
