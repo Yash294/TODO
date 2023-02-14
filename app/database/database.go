@@ -1,17 +1,18 @@
-package util
+package database
 
 import (
 	"fmt"
 	"github.com/Yash294/TODO/app/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"github.com/Yash294/TODO/config"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() error {
 
-	config, err := LoadDBConfig(".")
+	config, err := config.LoadDBConfig(".")
     if err != nil {
         panic("Cannot load config")
     }

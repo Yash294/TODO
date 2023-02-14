@@ -2,13 +2,13 @@ package routes
 
 import (
 	"github.com/Yash294/TODO/app/controllers/api"
-	"github.com/Yash294/TODO/util"
+	"github.com/Yash294/TODO/app/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
 func TaskRoutes(route fiber.Router) {
-	route.Get("/dashboard", util.RequireSession, controllers.RenderTasks)
-	route.Post("/add", util.RequireSession, controllers.AddTask)
-	route.Post("/edit", util.RequireSession, controllers.EditTask)
-	route.Post("/delete", util.RequireSession, controllers.DeleteTask)
+	route.Get("/dashboard", middleware.RequireSession, controllers.RenderTasks)
+	route.Post("/add", middleware.RequireSession, controllers.AddTask)
+	route.Post("/edit", middleware.RequireSession, controllers.EditTask)
+	route.Post("/delete", middleware.RequireSession, controllers.DeleteTask)
 }

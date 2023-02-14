@@ -3,12 +3,12 @@ package controllers
 import (
 	"github.com/Yash294/TODO/app/models"
 	"github.com/Yash294/TODO/app/repos"
-	"github.com/Yash294/TODO/util"
+	"github.com/Yash294/TODO/app/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
 func RenderTasks(c *fiber.Ctx) error {
-	userId, err := util.GetSessionUserID(c)
+	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -39,7 +39,7 @@ func RenderTasks(c *fiber.Ctx) error {
 }
 
 func AddTask(c *fiber.Ctx) error {
-	userId, err := util.GetSessionUserID(c)
+	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -70,7 +70,7 @@ func AddTask(c *fiber.Ctx) error {
 }
 
 func EditTask(c *fiber.Ctx) error {
-	userId, err := util.GetSessionUserID(c)
+	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -101,7 +101,7 @@ func EditTask(c *fiber.Ctx) error {
 }
 
 func DeleteTask(c *fiber.Ctx) error {
-	userId, err := util.GetSessionUserID(c)
+	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,

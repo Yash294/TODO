@@ -1,10 +1,11 @@
-package util
+package redis
 
 import (
 	"time"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/storage/redis"
+	"github.com/Yash294/TODO/config"
 )
 
 var (
@@ -17,7 +18,7 @@ func ConnectRedis() error {
 
 	var storage fiber.Storage
 
-	config, err := LoadRedisConfig(".")
+	config, err := config.LoadRedisConfig(".")
 	if err != nil {
 		panic("Cannot load config")
 	}

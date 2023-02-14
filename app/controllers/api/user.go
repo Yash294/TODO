@@ -3,7 +3,8 @@ package controllers
 import (
 	"github.com/Yash294/TODO/app/models"
 	"github.com/Yash294/TODO/app/repos"
-	"github.com/Yash294/TODO/util"
+	"github.com/Yash294/TODO/app/database"
+	"github.com/Yash294/TODO/app/redis"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -25,7 +26,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	result, err := repos.Login(&data, util.DB, repos.EncryptionInstance)
+	result, err := repos.Login(&data, database.DB, repos.EncryptionInstance)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -34,7 +35,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	sess, err := util.Store.Get(c)
+	sess, err := redis.Store.Get(c)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -42,8 +43,8 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	sess.Set(util.AUTH_KEY, true)
-	sess.Set(util.USER_ID, result)
+	sess.Set(redis.AUTH_KEY, true)
+	sess.Set(redis.USER_ID, result)
 
 	if err := sess.Save(); err != nil {
 		panic(err)
@@ -65,7 +66,7 @@ func Signup(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := repos.CreateUser(&data, util.DB, repos.EncryptionInstance, repos.CopierInstance); err != nil {
+	if err := repos.CreateUser(&data, database.DB, repos.EncryptionInstance, repos.CopierInstance); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
@@ -103,7 +104,7 @@ func ResetPassword(c *fiber.Ctx) error {
 
 func Logout(c *fiber.Ctx) error {
 
-	sess, err := util.Store.Get(c)
+	sess, err := redis.Store.Get(c)
 
 	if err != nil {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
