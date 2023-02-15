@@ -13,13 +13,14 @@ type Task struct {
 }
 
 type TaskDTO struct {
-	OldTaskName string `json:"oldTaskName" validate:"omitempty,ascii"`
+	ID uint `json:"id"`
 	TaskName string `json:"taskName" `
 	Description string `json:"description"`
 	IsDone bool `json:"isDone"`
 }
 
 type TaskResponse struct {
+	ID uint `json:"id"`
 	TaskName string `json:"taskName" validate:"omitempty,ascii"`
 	Description string `json:"description"`
 	IsDone   bool   `json:"isDone"`

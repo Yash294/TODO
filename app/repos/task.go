@@ -17,11 +17,10 @@ func GetTasks(userId uint) ([]models.TaskResponse, error) {
 	return query, nil
 }
 
-func AddTask(dataDTO *models.TaskDTO, userId uint) error {
-	// convert DTO
+func AddTask(dataDTO *models.TaskDTO, userId uint) (uint, error) {
 	var dataRepo models.Task
 	if err := copier.Copy(&dataRepo, &dataDTO); err != nil {
-		return errors.New("cannot map data")
+		return 0, errors.New("cannot map data")
 	}
 
 	dataRepo.Assignee = userId
@@ -29,13 +28,22 @@ func AddTask(dataDTO *models.TaskDTO, userId uint) error {
 	result := database.DB.Model(models.Task{}).Create(&dataRepo)
 
 	if result.Error != nil {
-		return errors.New("failed to create new task")
+		return 0, errors.New("failed to create new task")
 	}
-	return nil
+
+	var query uint
+	result = database.DB.Model(models.Task{}).Select("id").Where("task_name = ?", dataRepo.TaskName).First(&query)
+	
+	if result.Error != nil {
+		
+		return 0, errors.New("failed to retrieve newly added task")
+	}
+
+	return query, nil
 }
 
-func EditTask(dataDTO *models.TaskDTO, userId uint) error {
-	result := database.DB.Model(models.Task{}).Where("assignee = ? AND task_name = ?", userId, dataDTO.OldTaskName).Updates(map[string]interface{}{"task_name": dataDTO.TaskName, "description": dataDTO.Description, "is_done": dataDTO.IsDone})
+func EditTask(dataDTO *models.TaskDTO) error {
+	result := database.DB.Model(models.Task{}).Where("id = ?", dataDTO.ID).Updates(map[string]interface{}{"task_name": dataDTO.TaskName, "description": dataDTO.Description, "is_done": dataDTO.IsDone})
 	
 	if result.Error != nil {
 		return errors.New("failed to update task")
@@ -43,8 +51,8 @@ func EditTask(dataDTO *models.TaskDTO, userId uint) error {
 	return nil
 }
 
-func DeleteTask(dataDTO *models.TaskDTO, userId uint) error {
-	result := database.DB.Unscoped().Where("assignee = ? AND task_name = ?", userId, dataDTO.TaskName).Delete(&models.Task{})
+func DeleteTask(dataDTO *models.TaskDTO) error {
+	result := database.DB.Unscoped().Where("id = ?", dataDTO.ID).Delete(&models.Task{})
 
 	if result.Error != nil {
 		return errors.New("failed to create new task")

@@ -17,7 +17,12 @@
     }, false);
 })();
 
+const taskIDMap = new Map()
 let oldTaskName, deleteTaskName
+
+function addTaskID(taskName, id) {
+    taskIDMap.set(taskName, id)
+}
 
 function setEditValues(taskName, description, isDone) {
     oldTaskName = taskName 
@@ -64,6 +69,8 @@ function submitAddForm(event, form) {
         if (!result.success) {
             confirmation.className = 'alert alert-danger'
         } else {
+            taskIDMap.set(taskName, result.taskID)
+
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''
@@ -137,12 +144,13 @@ function submitEditForm(event, form) {
         return
     }
 
+    let taskId = taskIDMap.get(oldTaskName)
     let taskName = document.getElementById('edit-task-name').value
     let description = document.getElementById('edit-description').value
     let isDone = document.getElementById('edit-is-done').checked
 
     let data = {
-        oldTaskName: oldTaskName,
+        id: taskId,
         taskName: taskName,
         description: description,
         isDone: isDone
@@ -163,7 +171,11 @@ function submitEditForm(event, form) {
 
         if (!result.success) {
             confirmation.className = 'alert alert-danger'
-        } else {
+        } else {           
+            let taskId = taskIDMap.get(oldTaskName)
+            taskIDMap.set(taskName, taskId)
+            taskIDMap.delete(oldTaskName)
+
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''
@@ -193,7 +205,10 @@ function submitEditForm(event, form) {
 function submitDeleteForm(event) {
     event.preventDefault()
 
+    let taskId = taskIDMap.get(deleteTaskName)
+
     let data = {
+        id: taskId,
         taskName: deleteTaskName,
     }
 
@@ -213,6 +228,8 @@ function submitDeleteForm(event) {
         if (!result.success) {
             confirmation.className = 'alert alert-danger'    
         } else {
+            taskIDMap.delete(deleteTaskName)
+
             confirmation.className = 'alert alert-success'
             setTimeout(() => {
                 confirmation.className = ''

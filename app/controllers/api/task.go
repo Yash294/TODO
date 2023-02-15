@@ -10,7 +10,7 @@ import (
 func RenderTasks(c *fiber.Ctx) error {
 	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -41,7 +41,7 @@ func RenderTasks(c *fiber.Ctx) error {
 func AddTask(c *fiber.Ctx) error {
 	userId, err := middleware.GetSessionUserID(c)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -56,7 +56,9 @@ func AddTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.AddTask(&data, userId); err != nil {
+	taskID, err := repos.AddTask(&data, userId)
+
+	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
@@ -66,13 +68,14 @@ func AddTask(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "task created successfully",
+		"taskID": taskID,
 	})
 }
 
 func EditTask(c *fiber.Ctx) error {
-	userId, err := middleware.GetSessionUserID(c)
+	_, err := middleware.GetSessionUserID(c)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -87,7 +90,7 @@ func EditTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.EditTask(&data, userId); err != nil {
+	if err = repos.EditTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
@@ -101,9 +104,9 @@ func EditTask(c *fiber.Ctx) error {
 }
 
 func DeleteTask(c *fiber.Ctx) error {
-	userId, err := middleware.GetSessionUserID(c)
+	_, err := middleware.GetSessionUserID(c)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -118,7 +121,7 @@ func DeleteTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.DeleteTask(&data, userId); err != nil {
+	if err = repos.DeleteTask(&data); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
