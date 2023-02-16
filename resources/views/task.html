@@ -26,7 +26,6 @@
             </div>
         </div>
         <div id="taskContainer" class="container">
-            <div id="server-side-validation" role="alert"></div>
             <ul id="taskList" class="list-group pt-1 pb-1">
                 {{ range .data }}
                     <li class="list-group-item list-group-item-dark">
@@ -47,6 +46,7 @@
                     </li>
                 {{ end }}
             </ul>
+            <div id="server-side-validation" class="pt-2" role="alert"></div>
         </div>
 
         <div id="create-task" class="modal" tabindex="-1" role="dialog">
