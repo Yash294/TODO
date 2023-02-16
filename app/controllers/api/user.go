@@ -89,7 +89,7 @@ func ResetPassword(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := repos.ChangePassword(&data); err != nil {
+	if err := repos.ChangePassword(&data, database.DB, repos.EncryptionInstance); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),

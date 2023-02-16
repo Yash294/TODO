@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/Yash294/TODO/app/models"
 	"github.com/Yash294/TODO/app/repos"
+	"github.com/Yash294/TODO/database"
 	"github.com/Yash294/TODO/app/middleware"
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,7 +17,7 @@ func RenderTasks(c *fiber.Ctx) error {
 		})
 	}
 
-	result, err := repos.GetTasks(userId)
+	result, err := repos.GetTasks(userId, database.DB)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -24,7 +25,7 @@ func RenderTasks(c *fiber.Ctx) error {
 		})
 	}
 
-	email, err := repos.GetUser(userId)
+	email, err := repos.GetUser(userId, database.DB)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -56,7 +57,7 @@ func AddTask(c *fiber.Ctx) error {
 		})
 	}
 
-	taskID, err := repos.AddTask(&data, userId)
+	taskID, err := repos.AddTask(&data, userId, database.DB, repos.CopierInstance)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -90,7 +91,7 @@ func EditTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.EditTask(&data); err != nil {
+	if err = repos.EditTask(&data, database.DB); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
@@ -121,7 +122,7 @@ func DeleteTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err = repos.DeleteTask(&data); err != nil {
+	if err = repos.DeleteTask(&data, database.DB); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),

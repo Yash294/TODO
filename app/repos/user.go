@@ -4,7 +4,6 @@ import (
 	"errors"
 	"strings"
 	"github.com/Yash294/TODO/app/models"
-	"github.com/Yash294/TODO/database"
 	"github.com/alexedwards/argon2id"
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
@@ -92,10 +91,10 @@ func CreateUser(dataDTO *models.UserDTO, db *gorm.DB, encryption Encryption, cop
 	return nil
 }
 
-func ChangePassword(dataDTO *models.UserDTO) error {
+func ChangePassword(dataDTO *models.UserDTO, db *gorm.DB, encryption Encryption) error {
 	// query db to see if user credentials exist
 	var query models.User
-	result := database.DB.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
+	result := db.Where("email = ?", strings.ToLower(dataDTO.Email)).First(&query)
 
 	// is the error is not nil check cause
 	if result.Error != nil {
@@ -108,18 +107,18 @@ func ChangePassword(dataDTO *models.UserDTO) error {
 		}
 	}
 
-	if match, err := argon2id.ComparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
+	if match, err := encryption.comparePasswordAndHash(dataDTO.Password, query.Password); !match || err != nil {
 		return errors.New("old password is incorrect")
 	}
 
-	hash, err := argon2id.CreateHash(dataDTO.NewPassword, argon2id.DefaultParams)
+	hash, err := encryption.createHash(dataDTO.NewPassword)
 	
 	if err != nil {
 		return errors.New("failed to hash password")
 	}
 
 	// otherwise now we can update the user's password
-	result = database.DB.Model(models.User{}).Where("email = ?", strings.ToLower(dataDTO.Email)).Update("password", hash)
+	result = db.Model(models.User{}).Where("email = ?", strings.ToLower(dataDTO.Email)).Update("password", hash)
 
 	// if update not successful, then throw an error, otherwise return nil
 	if result.Error != nil {
@@ -128,9 +127,9 @@ func ChangePassword(dataDTO *models.UserDTO) error {
 	return nil
 }
 
-func GetUser(userId uint) (models.UserResponse, error) {
+func GetUser(userId uint, db *gorm.DB) (models.UserResponse, error) {
 	var query models.UserResponse
-	result := database.DB.Model(models.User{}).Select("email").Where("id = ?", userId).First(&query)
+	result := db.Model(models.User{}).Select("email").Where("id = ?", userId).First(&query)
 
 	if result.Error != nil {
 		return models.UserResponse{}, errors.New("failed to retrieve email")
